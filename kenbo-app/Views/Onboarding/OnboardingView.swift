@@ -16,8 +16,8 @@ struct OnboardingView: View {
                     
                     OnboardingPage(
                         image: "sparkles",
-                        title: "Welcome to Kenbo",
-                        description: "Your personal productivity companion."
+                        title: "Hola, Learner Welcome to MyName",
+                        description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
                     )
                     .tag(0)
                     
