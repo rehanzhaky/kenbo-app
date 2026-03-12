@@ -38,34 +38,66 @@ public struct PillBadgeView: View {
         self.style = style
     }
     
+    var isLevelStyle: Bool { style == .level }
+    
     public var body: some View {
-        HStack(spacing: 6) {
-            if let iconName = iconName, !iconName.isEmpty {
-                Image(systemName: iconName)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: 20)
-                    .foregroundColor(.white)
+        Group {
+            if isLevelStyle {
+                // Circular style for Level
+                HStack(spacing: -2) {
+                    Text("Lv.")
+                        .font(.system(size: 24, weight: .bold, design: .rounded))                        .foregroundColor(.white)
+
+                    
+                    // Extracting numerical part of "Lv. 20" if it was passed that way
+                    Text(text.replacingOccurrences(of: "Lv. ", with: ""))
+                        .font(.system(size: 24, weight: .bold, design: .rounded))
+                        .foregroundColor(.white)
+
+                }
+                .padding(.horizontal, 20)
+                .padding(.vertical, 8)
+                .background(style.backgroundColor)
+                .clipShape(Capsule())
+                .overlay(
+                    Capsule()
+                        .stroke(style.outlineColor, lineWidth: 2)
+                )
+                .background(
+                    Capsule()
+                        .fill(style.shadowColor)
+                        .offset(y: 4)
+                )
+            } else {
+                // Capsule style for Streak
+                HStack(spacing: 6) {
+                    if let iconName = iconName, !iconName.isEmpty {
+                        Image(systemName: iconName)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(height: 20)
+                            .foregroundColor(.white)
+                    }
+                    
+                    Text(text)
+                        .font(.system(size: 24, weight: .bold, design: .rounded))
+                        .foregroundColor(.white)
+                }
+                .padding(.horizontal, 20)
+                .padding(.vertical, 8)
+                .background(style.backgroundColor)
+                .clipShape(Capsule())
+                .overlay(
+                    Capsule()
+                        .stroke(style.outlineColor, lineWidth: 2)
+                )
+                .background(
+                    Capsule()
+                        .fill(style.shadowColor)
+                        .offset(y: 4)
+                )
             }
-            
-            Text(text)
-                .font(.system(size: 24, weight: .bold, design: .rounded))
-                .foregroundColor(.white)
         }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 8)
-        .background(style.backgroundColor)
-        .clipShape(Capsule())
-        // Apply the 3D-like bottom border/shadow effect shown in the design
-        .overlay(
-            Capsule()
-                .stroke(style.outlineColor, lineWidth: 2)
-        )
-        .background(
-            Capsule()
-                .fill(style.shadowColor)
-                .offset(y: 4) // This creates the 3D bottom-heavy shadow look
-        )
     }
 }
 
