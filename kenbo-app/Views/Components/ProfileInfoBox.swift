@@ -15,10 +15,42 @@ struct ProfileInfoBox: View {
                 .foregroundColor(.black)
             
             // XP Progress Bar
-            ProfileProgressBar.xpBar(current: currentXP, max: maxXP)
+            HStack(spacing: 8) {
+                Image(systemName: "star.fill")
+                    .foregroundColor(Color(hex: "BE71FE"))
+                    .font(.system(size: 14, weight: .bold))
+                
+                ProgressBar(
+                    progress: Double(currentXP) / Double(maxXP),
+                    color: Color(hex: "BE71FE"),
+                    backgroundColor: Color(hex: "E5D4F5"),
+                    height: 20
+                )
+                
+                Text("\(currentXP)/\(maxXP) XP")
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundColor(Color(hex: "BE71FE"))
+            }
             
             // Task Progress Bar
-            ProfileProgressBar.taskBar(current: completedTasks, max: totalTasks)
+            HStack(spacing: 8) {
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundColor(Color(hex: "6EE46C"))
+                    .font(.system(size: 14, weight: .bold))
+                
+                ProgressBar(
+                    progress: Double(completedTasks) / Double(totalTasks),
+                    color: Color(hex: "6EE46C"),
+                    backgroundColor: Color(hex: "B5F2B4"),
+                    height: 20
+                )
+                
+                Text("\(completedTasks)/\(totalTasks) Tasks")
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundColor(Color(hex: "6EE46C"))
+            }
+            
+
         }
     }
 }
