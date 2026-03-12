@@ -8,7 +8,7 @@ struct RewardView: View {
     @State private var isExpanded: Bool = false
     
     // Constants for drawer positioning
-    private let collapsedOffset: CGFloat = 360 // Positioned after Profile Card
+    private let collapsedOffset: CGFloat = 240 // Positioned closer to Profile Card
     private let expandedOffset: CGFloat = 60
     
     init(userName: String, gender: String) {
