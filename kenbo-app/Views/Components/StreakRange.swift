@@ -41,6 +41,10 @@ struct StreakRange: View {
                     )
                 )
         )
+        .overlay(
+            RoundedRectangle(cornerRadius: 30)
+                .stroke(Color(hex: "FFFFFF"), lineWidth: 2)
+        )
         .padding(.horizontal, 16)
     }
 }
