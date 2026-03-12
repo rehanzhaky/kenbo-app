@@ -76,7 +76,7 @@ struct RewardView: View {
                                         buttonTitle: reward.buttonTitle,
                                         style: reward.style
                                     ) {
-                                        // Action
+                                        viewModel.activeDetail = reward.type
                                     }
                                 }
                             }
@@ -114,6 +114,16 @@ struct RewardView: View {
             }
             .background(Color.App.Gray.light)
             .ignoresSafeArea(edges: .bottom)
+            .fullScreenCover(item: $viewModel.activeDetail) { type in
+                switch type {
+                case .motivation:
+                    RewardMotivationView()
+                case .story:
+                    RewardStoryView()
+                case .title:
+                    RewardTitleView(userName: viewModel.userProfile.name)
+                }
+            }
         }
     }
 }
