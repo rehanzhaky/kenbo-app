@@ -78,7 +78,7 @@ struct TaskCard: View {
 
 #Preview {
     VStack(spacing: 20) {
-        // Red Card
+        // Incomplete Task Card
         TaskCard(
             icon: "heart-pulse",
             iconBackgroundColor: Color(hex: "8B4444"),
@@ -91,7 +91,7 @@ struct TaskCard: View {
             shadowColor: Color(hex: "9C3B3B")
         )
         
-        // Orange Card (Completed - 100%)
+        // Completed Task Card (100%)
         TaskCard(
             icon: "food-turkey",
             iconBackgroundColor: Color(hex: "8B5E33"),
@@ -102,19 +102,6 @@ struct TaskCard: View {
             progressBarColor: Color(hex: "FF9B5E"),
             progressBarBackgroundColor: Color(hex: "FFD4B3"),
             shadowColor: Color(hex: "B0763C")
-        )
-        
-        // Blue Card
-        TaskCard(
-            icon: "energy",
-            iconBackgroundColor: Color(hex: "1F4F54"),
-            cardBackgroundColor: Color(hex: "6CDCE4"),
-            title: "Track your progress and stay motivated.",
-            currentProgress: 2,
-            totalProgress: 4,
-            progressBarColor: Color(hex: "4AA8B3"),
-            progressBarBackgroundColor: Color(hex: "B3E5EA"),
-            shadowColor: Color(hex: "29676C")
         )
     }
     .padding()
