@@ -8,8 +8,7 @@ struct OnboardingView: View {
     var body: some View {
         
         if showHome {
-            HomeView()
-        } else {
+            HomeView(userName: "User", gender: "Lelaki")        } else {
             VStack {
                 
                 TabView(selection: $currentPage) {
