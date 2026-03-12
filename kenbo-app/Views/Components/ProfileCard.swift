@@ -37,7 +37,6 @@ struct ProfileCard: View {
             completedTasks: 4,
             totalTasks: 7
         )
-        .padding()
         
         ProfileCard(
             userName: "Sarah",
@@ -47,7 +46,6 @@ struct ProfileCard: View {
             completedTasks: 6,
             totalTasks: 7
         )
-        .padding()
     }
     .background(Color(hex: "F7F7F7"))
 }
