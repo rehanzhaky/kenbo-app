@@ -11,6 +11,7 @@ import SwiftUI
 struct HomeView: View {
     let userName: String
     let gender: String
+    @State private var statBars: [StatBarData] = StatBarData.defaultBars
     
     var body: some View {
         ScrollView {
@@ -26,41 +27,19 @@ struct HomeView: View {
                 )
                 .padding(.top, 20)
                 
-                // Health Bar
-                StatBarCard(
-                    title: "Health",
-                    icon: "heart-pulse",
-                    current: 200,
-                    max: 300,
-                    color: Color(hex: "FE7171"),
-                    lightColor: Color(hex: "FFC5C5"),
-                    outerCircleColor: Color(hex: "9C3B3B"),
-                    unit: "HP"
-                )
-                
-                // Power Bar
-                StatBarCard(
-                    title: "Power",
-                    icon: "food-turkey",
-                    current: 200,
-                    max: 300,
-                    color: Color(hex: "6EE46C"),
-                    lightColor: Color(hex: "B5F2B4"),
-                    outerCircleColor: Color(hex: "3D8D3B"),
-                    unit: "PW"
-                )
-                
-                // Stamina Bar
-                StatBarCard(
-                    title: "Stamina",
-                    icon: "energy",
-                    current: 200,
-                    max: 300,
-                    color: Color(hex: "D5E5FF"),
-                    lightColor: Color(hex: "D5E5FF"),
-                    outerCircleColor: Color(hex: "385382"),
-                    unit: "ST"
-                )
+                // Stat Bars
+                ForEach(statBars) { stat in
+                    StatBarCard(
+                        title: stat.title,
+                        icon: stat.icon,
+                        current: stat.current,
+                        max: stat.max,
+                        color: stat.color,
+                        lightColor: stat.lightColor,
+                        outerCircleColor: stat.outerCircleColor,
+                        unit: stat.unit
+                    )
+                }
             }
             .padding(.horizontal)
             .padding(.bottom, 20)
