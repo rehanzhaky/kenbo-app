@@ -6,19 +6,22 @@ struct ProgressBar: View {
     let backgroundColor: Color
     let height: CGFloat
     let text: String?
+    let textColor: Color
     
     init(
         progress: Double,
         color: Color = Color(hex: "BE71FE"),
         backgroundColor: Color = Color(hex: "E5D4F5"),
         height: CGFloat = 50,
-        text: String? = nil
+        text: String? = nil,
+        textColor: Color = .white
     ) {
         self.progress = min(max(progress, 0.0), 1.0)
         self.color = color
         self.backgroundColor = backgroundColor
         self.height = height
         self.text = text
+        self.textColor = textColor
     }
     
     var body: some View {
@@ -42,7 +45,7 @@ struct ProgressBar: View {
                     Spacer()
                     Text(text)
                         .font(.system(size: 18, weight: .semibold))
-                        .foregroundColor(.white)
+                        .foregroundColor(textColor)
                         .padding(.trailing, 20)
                 }
             }
