@@ -10,7 +10,8 @@ struct ProfileBox<Content: View>: View {
     
     var body: some View {
         content
-            .padding(20)
+            .padding(.horizontal, 20)
+            .padding(.vertical, 20)
             .background(Color.white)
             .cornerRadius(20)
             .shadow(color: Color(hex: "74409F"), radius: 0, x: 0, y: 5)

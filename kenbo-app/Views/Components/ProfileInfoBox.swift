@@ -8,62 +8,46 @@ struct ProfileInfoBox: View {
     let totalTasks: Int
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            // Name Row with Badge
-            HStack(spacing: 8) {
+        VStack(alignment: .leading, spacing: 8) {
+            // Nama dengan Badge
+            HStack(alignment: .center, spacing: 8) {
                 Text(userName)
-                    .font(.system(size: 32, weight: .bold))
+                    .font(.custom("Montserrat-Bold", size: 32))
                     .foregroundColor(.black)
                 
                 // "Si Bugar" Badge
                 Text("Si Bugar")
-                    .font(.system(size: 10, weight: .bold))
+                    .font(.custom("Montserrat-Bold", size: 10))
                     .foregroundColor(.white)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
-                    .background(Color.App.Purple.primary)
+                    .background(Color(hex: "BE71FE"))
                     .clipShape(RoundedRectangle(cornerRadius: 6))
             }
             
             // XP Progress Bar
-            VStack(alignment: .leading, spacing: 4) {
-                HStack(spacing: 8) {
-                    Image(systemName: "star.fill")
-                        .foregroundColor(Color.App.Purple.primary)
-                        .font(.system(size: 16))
-                    
-                    ProgressBar(
-                        progress: Double(currentXP) / Double(maxXP),
-                        color: Color.App.Purple.primary,
-                        backgroundColor: Color.App.Purple.light,
-                        height: 12
-                    )
-                    
-                    Text("\(currentXP)/\(maxXP) XP")
-                        .font(.system(size: 11, weight: .bold))
-                        .foregroundColor(Color.App.Purple.primary)
-                }
-            }
+            ProfileProgressBar(
+                currentValue: currentXP,
+                maxValue: maxXP,
+                label: "XP",
+                fillColor: Color(hex: "BE71FE"),
+                backgroundColor: Color(hex: "E5D4F5"),
+                textColor: .white,
+                height: 16
+            )
+            .frame(width: 220, height: 16)
             
             // Task Progress Bar
-            VStack(alignment: .leading, spacing: 4) {
-                HStack(spacing: 8) {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundColor(Color.App.Green.primary)
-                        .font(.system(size: 16))
-                    
-                    ProgressBar(
-                        progress: Double(completedTasks) / Double(totalTasks),
-                        color: Color.App.Green.primary,
-                        backgroundColor: Color.App.Green.light,
-                        height: 12
-                    )
-                    
-                    Text("\(completedTasks)/\(totalTasks) Tasks")
-                        .font(.system(size: 11, weight: .bold))
-                        .foregroundColor(Color.App.Green.primary)
-                }
-            }
+            ProfileProgressBar(
+                currentValue: completedTasks,
+                maxValue: totalTasks,
+                label: "",
+                fillColor: Color(hex: "FEB871"),
+                backgroundColor: Color(hex: "FFE2C4"),
+                textColor: .white,
+                height: 14
+            )
+            .frame(width: 100, height: 14)
         }
     }
 }
