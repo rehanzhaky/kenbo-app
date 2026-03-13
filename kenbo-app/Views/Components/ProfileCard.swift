@@ -10,7 +10,7 @@ struct ProfileCard: View {
     
     var body: some View {
         ProfileBox {
-            HStack(spacing: 16) {
+            HStack(alignment: .top, spacing: 12) {
                 // Avatar
                 ProfileAvatar(gender: gender, size: 80)
                 
@@ -22,8 +22,11 @@ struct ProfileCard: View {
                     completedTasks: completedTasks,
                     totalTasks: totalTasks
                 )
+                
+                Spacer()
             }
         }
+        .frame(height: 120)
     }
 }
 
