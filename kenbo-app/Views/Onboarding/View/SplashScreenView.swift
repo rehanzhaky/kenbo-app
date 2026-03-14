@@ -6,7 +6,7 @@ struct SplashScreenView: View {
     var body: some View {
         Group {
             if viewModel.showHome {
-                HomeView(
+                MainContainerView(
                     userName: viewModel.userName,
                     gender: viewModel.selectedGender
                 )

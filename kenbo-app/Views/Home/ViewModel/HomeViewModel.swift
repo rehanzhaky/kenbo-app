@@ -184,7 +184,10 @@ class HomeViewModel: ObservableObject {
         self.questTasks = tasks
         
         // 4. Schedule local notifications
-        QuestScheduler.shared.scheduleNotifications(for: HomeViewModel.catalogue, session: session)
+        let incompleteCatalogue = HomeViewModel.catalogue.filter { task in
+            !completedIDs.contains { $0.hasPrefix(task.id) }
+        }
+        QuestScheduler.shared.scheduleNotifications(for: incompleteCatalogue, session: session)
     }
 
     // MARK: - Task Completion

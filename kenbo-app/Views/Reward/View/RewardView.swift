@@ -2,7 +2,6 @@ import SwiftUI
 
 struct RewardView: View {
     @StateObject private var viewModel: RewardViewModel
-    @Environment(\.dismiss) var dismiss
     
     // Drawer State
     @State private var drawerOffset: CGFloat = 0
@@ -21,22 +20,6 @@ struct RewardView: View {
             ZStack(alignment: .top) {
                 // Background Section
                 VStack(spacing: 24) {
-                    // Back Button
-                    HStack {
-                        Button(action: {
-                            dismiss()
-                        }) {
-                            HStack(spacing: 8) {
-                                Image(systemName: "chevron.left")
-                                    .font(.system(size: 20, weight: .bold))
-                                Text("Kembali")
-                                    .font(.system(size: 16, weight: .bold))
-                            }
-                            .foregroundColor(Color.App.Purple.dark)
-                        }
-                        Spacer()
-                    }
-                    
                     // Profile Card
                     ProfileCard(
                         userName: viewModel.userProfile.name,
@@ -88,6 +71,13 @@ struct RewardView: View {
                         
                         // Reward List (Vertical Scroll View)
                         ScrollView(.vertical, showsIndicators: false) {
+                            // Track scroll offset
+                            GeometryReader { innerGeo in
+                                Color.clear
+                                    .preference(key: ScrollOffsetPreferenceKey.self, value: innerGeo.frame(in: .global).minY)
+                            }
+                            .frame(height: 0)
+                            
                             VStack(spacing: 16) {
                                 ForEach(viewModel.rewards) { reward in
                                     RewardCardView(
@@ -109,7 +99,7 @@ struct RewardView: View {
                         .padding(.top, 10)
                     }
                     .padding(.horizontal, 32)
-                    .padding(.bottom, isExpanded ? 30 : geometry.safeAreaInsets.bottom + 20)
+                    .padding(.bottom, isExpanded ? 30 : geometry.safeAreaInsets.bottom + 120)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                     .background(
                         ZStack(alignment: .top) {

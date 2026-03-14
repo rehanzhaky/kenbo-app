@@ -15,7 +15,6 @@ struct HomeView: View {
     @State private var drawerOffset: CGFloat = 0
     @State private var lastOffset: CGFloat = 0
     @State private var isExpanded: Bool = false
-    @State private var showingRewards: Bool = false
     @State private var showingStreak: Bool = false
     
     
@@ -32,8 +31,14 @@ struct HomeView: View {
             ZStack(alignment: .top) {
                 // Main Static Content (Scrollable under drawer)
                 ScrollView(showsIndicators: false) {
+                    // Track scroll offset
+                    GeometryReader { innerGeo in
+                        Color.clear
+                            .preference(key: ScrollOffsetPreferenceKey.self, value: innerGeo.frame(in: .global).minY)
+                    }
+                    .frame(height: 0)
+                    
                     VStack(alignment: .leading, spacing: 24) {
-                        // Header
                         HStack {
                             Spacer()
                             HStack(spacing: 8) {
@@ -57,7 +62,7 @@ struct HomeView: View {
                             completedTasks: viewModel.userProfile.completedTasks,
                             totalTasks: viewModel.userProfile.totalTasks,
                             titleBadge: prefs.titleBadge,
-                            onTap: { showingRewards = true }
+                            onTap: { }
                         )
                         
                         // Profile Title
@@ -146,7 +151,7 @@ struct HomeView: View {
                         .disabled(!isExpanded) // Only scroll if expanded
                     }
                     .padding(.horizontal, 32)
-                    .padding(.bottom, 100)
+                    .padding(.bottom, 150)
                     .background(Color.white)
                     .clipShape(RoundedCornerShape(radius: 48, corners: [.topLeft, .topRight]))
                 }
@@ -198,12 +203,6 @@ struct HomeView: View {
                     viewModel.completeTask(id: "quest_walk", earnedXP: xp)
                 })
             }
-        }
-        .fullScreenCover(isPresented: $showingRewards) {
-            RewardView(
-                userName: viewModel.userProfile.name,
-                gender: viewModel.userProfile.gender
-            )
         }
         .fullScreenCover(isPresented: $showingStreak) {
             let streakVM = StreakViewModel()
