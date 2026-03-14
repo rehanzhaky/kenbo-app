@@ -8,7 +8,7 @@ struct RewardView: View {
     @State private var isExpanded: Bool = false
     
     // Constants for drawer positioning
-    private let collapsedOffset: CGFloat = 240 // Positioned closer to Profile Card
+    private let collapsedOffset: CGFloat = 210 // Tighter to Profile Card
     private let expandedOffset: CGFloat = 60
     
     init(userName: String, gender: String) {
@@ -27,11 +27,14 @@ struct RewardView: View {
                         currentXP: viewModel.userProfile.currentXP,
                         maxXP: viewModel.userProfile.maxXP,
                         completedTasks: viewModel.userProfile.completedTasks,
-                        totalTasks: viewModel.userProfile.totalTasks
+                        totalTasks: viewModel.userProfile.totalTasks,
+                        titleBadge: viewModel.userProfile.titleBadge,
+                        onTap: {}
                     )
+                    Spacer()
                 }
                 .padding(.horizontal, 20)
-                .padding(.top, 40)
+                .padding(.top, 20)
                 .opacity(isExpanded ? 0.3 : 1.0)
                 .animation(.easeInOut, value: isExpanded)
                 
@@ -66,28 +69,51 @@ struct RewardView: View {
                             .lineLimit(isExpanded ? nil : 3)
                             .fixedSize(horizontal: false, vertical: true)
                         
-                        // Reward List
-                        ScrollView(isExpanded ? .vertical : .init()) {
-                            VStack(spacing: 20) {
+                        // Reward List (Vertical Scroll View)
+                        ScrollView(.vertical, showsIndicators: false) {
+                            // Track scroll offset
+                            GeometryReader { innerGeo in
+                                Color.clear
+                                    .preference(key: ScrollOffsetPreferenceKey.self, value: innerGeo.frame(in: .global).minY)
+                            }
+                            .frame(height: 0)
+                            
+                            VStack(spacing: 16) {
                                 ForEach(viewModel.rewards) { reward in
                                     RewardCardView(
                                         text: reward.title,
                                         iconName: reward.icon,
                                         buttonTitle: reward.buttonTitle,
-                                        style: reward.style
+                                        style: reward.style,
+                                        isLocked: reward.isLocked,
+                                        unlockMessage: reward.unlockMessage
                                     ) {
                                         viewModel.activeDetail = reward.type
+                                        viewModel.activeDetailContent = reward.detailContent
+                                        viewModel.activeDetailIndex = reward.detailIndex
                                     }
                                 }
                             }
+                            .padding(.bottom, 20)
                         }
-                        .disabled(!isExpanded)
+                        .padding(.top, 10)
                     }
                     .padding(.horizontal, 32)
-                    .padding(.bottom, 100)
-                    .background(Color.white)
+                    .padding(.bottom, isExpanded ? 30 : geometry.safeAreaInsets.bottom + 120)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                    .background(
+                        ZStack(alignment: .top) {
+                            Color.white
+                            // Only round the top corners by using a flat rectangle at the bottom
+                            Rectangle()
+                                .fill(Color.white)
+                                .offset(y: 100)
+                                .padding(.bottom, -1000) // Ensure it extends far down without stretching content
+                        }
+                    )
                     .clipShape(RoundedCornerShape(radius: 48, corners: [.topLeft, .topRight]))
                 }
+                .frame(height: geometry.size.height - expandedOffset) // Constrain scrollview height to visible area
                 .offset(y: drawerOffset == 0 ? (isExpanded ? expandedOffset : collapsedOffset) : drawerOffset)
                 .gesture(
                     DragGesture()
@@ -117,11 +143,24 @@ struct RewardView: View {
             .fullScreenCover(item: $viewModel.activeDetail) { type in
                 switch type {
                 case .motivation:
-                    RewardMotivationView()
+                    RewardMotivationView(
+                        content: viewModel.activeDetailContent,
+                        onRefresh: {
+                            Task { await viewModel.loadAIContent() }
+                        }
+                    )
                 case .story:
-                    RewardStoryView()
+                    RewardStoryView(
+                        content: viewModel.activeDetailContent,
+                        onRefresh: {
+                            Task { await viewModel.loadAIContent() }
+                        }
+                    )
                 case .title:
-                    RewardTitleView(userName: viewModel.userProfile.name)
+                    RewardTitleView(
+                        userName: viewModel.userProfile.name,
+                        title: viewModel.activeDetailContent
+                    )
                 }
             }
         }

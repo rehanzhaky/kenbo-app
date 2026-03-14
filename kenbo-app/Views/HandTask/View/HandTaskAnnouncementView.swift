@@ -1,19 +1,19 @@
 import SwiftUI
 
 struct HandTaskAnnouncementView: View {
-    @Environment(\.dismiss) var dismiss
+    @ObservedObject var viewModel: HandTaskViewModel
     
     var body: some View {
         ResponseTemplateView(
             imageName: "hand_stretch", // Placeholder for hand stretching pixel art
-            title: "Peregangan Yuk",
-            subtitle: "Pegang handphone di tanganmu ya lalu putar pergelangan tanganmu biar rileks dulu nih yee",
+            title: "Istirahatkan\nPergelangan Tangan",
+            subtitle: "Pegang handphone di tanganmu, lalu putar pergelangan tanganmu secara perlahan biar lebih rileks dan bebas pegal.",
             topContent: {
                 Color.clear.frame(height: 20)
             },
             bottomContent: {
                 PrimaryButton(title: "Gass") {
-                    // Navigate to HandTaskTrackingView
+                    viewModel.beginTracking()
                 }
                 .padding(.top, 20)
             }
@@ -22,5 +22,5 @@ struct HandTaskAnnouncementView: View {
 }
 
 #Preview {
-    HandTaskAnnouncementView()
+    HandTaskAnnouncementView(viewModel: HandTaskViewModel(onComplete: { _ in }))
 }

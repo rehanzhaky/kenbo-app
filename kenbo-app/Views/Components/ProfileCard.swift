@@ -7,25 +7,32 @@ struct ProfileCard: View {
     let maxXP: Int
     let completedTasks: Int
     let totalTasks: Int
+    let titleBadge: String?
+    let onTap: () -> Void
     
     var body: some View {
-        ProfileBox {
-            HStack(alignment: .top, spacing: 12) {
-                // Avatar
-                ProfileAvatar(gender: gender, size: 80)
-                
-                // Profile Info
-                ProfileInfoBox(
-                    userName: userName,
-                    currentXP: currentXP,
-                    maxXP: maxXP,
-                    completedTasks: completedTasks,
-                    totalTasks: totalTasks
-                )
-                
-                Spacer()
+
+        Button(action: onTap) {
+            ProfileBox {
+                HStack(alignment: .top, spacing: 12) {
+                    // Avatar
+                    ProfileAvatar(gender: gender, size: 80)
+                    
+                    // Profile Info
+                    ProfileInfoBox(
+                        userName: userName,
+                        currentXP: currentXP,
+                        maxXP: maxXP,
+                        completedTasks: completedTasks,
+                        totalTasks: totalTasks,
+                        titleBadge: titleBadge
+                    )
+                    
+                    Spacer()
+                }
             }
         }
+        .buttonStyle(.plain)
         .frame(height: 120)
     }
 }
@@ -38,7 +45,9 @@ struct ProfileCard: View {
             currentXP: 200,
             maxXP: 300,
             completedTasks: 4,
-            totalTasks: 7
+            totalTasks: 7,
+            titleBadge: "Bugar",
+            onTap: {}
         )
         
         ProfileCard(
@@ -47,7 +56,9 @@ struct ProfileCard: View {
             currentXP: 150,
             maxXP: 300,
             completedTasks: 6,
-            totalTasks: 7
+            totalTasks: 7,
+            titleBadge: nil,
+            onTap: {}
         )
     }
     .background(Color(hex: "F7F7F7"))

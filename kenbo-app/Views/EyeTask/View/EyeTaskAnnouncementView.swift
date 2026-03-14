@@ -1,17 +1,21 @@
 import SwiftUI
 
 struct EyeTaskAnnouncementView: View {
+    @ObservedObject var viewModel: EyeTaskViewModel
+
     var body: some View {
         ResponseTemplateView(
-            imageName: "night_sky", // Placeholder for night sky pixel art
-            title: "Enjoy Dulu Yuk",
-            subtitle: "Pegang handphone di tanganmu ya lalu putar pergelangan tanganmu biar rileks dulu nih yee",
+            imageName: "night_sky",
+            title: "Istirahatkan Matamu",
+            subtitle: "Tatap layar lurus, lalu kedipkan matamu beberapa kali sesuai instruksi. Biar mata tetap segar dan fokus!",
             topContent: {
                 Color.clear.frame(height: 20)
             },
             bottomContent: {
                 PrimaryButton(title: "Yuk") {
-                    // Navigate to EyeTaskTrackingView
+                    withAnimation(.easeInOut(duration: 0.4)) {
+                        viewModel.beginTracking()
+                    }
                 }
                 .padding(.top, 20)
             }
@@ -20,5 +24,5 @@ struct EyeTaskAnnouncementView: View {
 }
 
 #Preview {
-    EyeTaskAnnouncementView()
+    EyeTaskAnnouncementView(viewModel: EyeTaskViewModel(onComplete: { _ in }))
 }

@@ -8,8 +8,6 @@ struct TaskCardData: Identifiable {
     let title: String
     let currentProgress: Int
     let totalProgress: Int
-    let progressBarColor: Color
-    let progressBarBackgroundColor: Color
     let shadowColor: Color
     
     // Predefined task cards
@@ -20,8 +18,6 @@ struct TaskCardData: Identifiable {
         title: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
         currentProgress: 1,
         totalProgress: 2,
-        progressBarColor: Color(hex: "6CA8FF"),
-        progressBarBackgroundColor: Color(hex: "D5E5FF"),
         shadowColor: Color(hex: "9C3B3B")
     )
     
@@ -32,8 +28,6 @@ struct TaskCardData: Identifiable {
         title: "Complete your daily tasks and earn rewards.",
         currentProgress: 5,
         totalProgress: 5,
-        progressBarColor: Color(hex: "FF9B5E"),
-        progressBarBackgroundColor: Color(hex: "FFD4B3"),
         shadowColor: Color(hex: "B0763C")
     )
     
@@ -44,8 +38,6 @@ struct TaskCardData: Identifiable {
         title: "Track your progress and stay motivated.",
         currentProgress: 2,
         totalProgress: 4,
-        progressBarColor: Color(hex: "4AA8B3"),
-        progressBarBackgroundColor: Color(hex: "B3E5EA"),
         shadowColor: Color(hex: "29676C")
     )
 }

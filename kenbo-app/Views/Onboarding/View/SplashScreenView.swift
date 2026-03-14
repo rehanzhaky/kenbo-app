@@ -4,33 +4,37 @@ struct SplashScreenView: View {
     @StateObject private var viewModel = OnboardingViewModel()
     
     var body: some View {
-        if viewModel.showHome {
-            HomeView(userName: viewModel.userName, gender: viewModel.selectedGender)
-        } else {
-            ZStack(alignment: .bottom) {
-                TabView(selection: $viewModel.currentPage) {
-                    // Page 1: Welcome Page
-                    WelcomePageView(viewModel: viewModel)
-                        .tag(0)
+        Group {
+            if viewModel.showHome {
+                MainContainerView(
+                    userName: viewModel.userName,
+                    gender: viewModel.selectedGender
+                )
+            } else {
+                // Onboarding flow
+                ZStack(alignment: .bottom) {
+                    TabView(selection: $viewModel.currentPage) {
+                        WelcomePageView(viewModel: viewModel)
+                            .tag(0)
+                        
+                        SessionSelectionView(viewModel: viewModel)
+                            .tag(1)
+                        
+                        NameInputView(viewModel: viewModel)
+                            .tag(2)
+                    }
+                    .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                     
-                    // Page 2: Academy Session Selection
-                    SessionSelectionView(viewModel: viewModel)
-                        .tag(1)
-                    
-                    // Page 3: Name Input
-                    NameInputView(viewModel: viewModel)
-                        .tag(2)
+                    CustomPageIndicator(currentPage: viewModel.currentPage, pageCount: 3)
+                        .padding(.bottom, 30)
                 }
-                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-                
-                // Custom Page Indicator
-                CustomPageIndicator(currentPage: viewModel.currentPage, pageCount: 3)
-                    .padding(.bottom, 30)
+                .background(Color(hex: "F7F7F7"))
             }
-            .background(Color(hex: "F7F7F7"))
         }
-    }
-}
+                .background(Color(hex: "F7F7F7"))
+            }
+        }
+
 
 #Preview {
     SplashScreenView()

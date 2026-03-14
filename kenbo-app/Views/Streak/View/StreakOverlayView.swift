@@ -45,7 +45,7 @@ struct StreakOverlayView: View {
                     .padding(.bottom, 40)
                 
                 // Streak Range Component
-                StreakRange()
+                StreakRange(currentStreak: viewModel.currentStreak)
                     .padding(.bottom, 50)
                 
                 // Congratulation Text

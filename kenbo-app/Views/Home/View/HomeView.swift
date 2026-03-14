@@ -9,11 +9,16 @@ import SwiftUI
 
 struct HomeView: View {
     @StateObject private var viewModel: HomeViewModel
+    @ObservedObject private var prefs = UserPreferences.shared
     
     // Drawer State
     @State private var drawerOffset: CGFloat = 0
     @State private var lastOffset: CGFloat = 0
     @State private var isExpanded: Bool = false
+    @State private var showingStreak: Bool = false
+    @State private var showingInfo: Bool = false
+    @State private var showingShare: Bool = false
+    
     
     // Constants for drawer positioning
     private let collapsedOffset: CGFloat = 680 // Increased to show all profile UI
@@ -28,13 +33,24 @@ struct HomeView: View {
             ZStack(alignment: .top) {
                 // Main Static Content (Scrollable under drawer)
                 ScrollView(showsIndicators: false) {
+                    // Track scroll offset
+                    GeometryReader { innerGeo in
+                        Color.clear
+                            .preference(key: ScrollOffsetPreferenceKey.self, value: innerGeo.frame(in: .global).minY)
+                    }
+                    .frame(height: 0)
+                    
                     VStack(alignment: .leading, spacing: 24) {
-                        // Header
                         HStack {
                             Spacer()
                             HStack(spacing: 8) {
                                 PillBadgeView(text: "Lv. \(viewModel.userProfile.level)", style: .level)
-                                PillBadgeView(text: "\(viewModel.userProfile.streak)", iconName: "flame.fill", style: .streak)
+                                Button {
+                                    showingStreak = true
+                                } label: {
+                                    PillBadgeView(text: "\(viewModel.userProfile.streak)", iconName: "flame.fill", style: .streak)
+                                }
+                                .buttonStyle(.plain)
                             }
                         }
                         .padding(.top, 10)
@@ -46,7 +62,9 @@ struct HomeView: View {
                             currentXP: viewModel.userProfile.currentXP,
                             maxXP: viewModel.userProfile.maxXP,
                             completedTasks: viewModel.userProfile.completedTasks,
-                            totalTasks: viewModel.userProfile.totalTasks
+                            totalTasks: viewModel.userProfile.totalTasks,
+                            titleBadge: prefs.titleBadge,
+                            onTap: { }
                         )
                         
                         // Profile Title
@@ -63,8 +81,12 @@ struct HomeView: View {
                             powerMax: viewModel.characterStats.powerMax,
                             staminaCurrent: viewModel.characterStats.staminaCurrent,
                             staminaMax: viewModel.characterStats.staminaMax,
-                            onInfoTapped: {},
-                            onShareTapped: {}
+                            onInfoTapped: {
+                                showingInfo = true
+                            },
+                            onShareTapped: {
+                                showingShare = true
+                            }
                         )
                         
                         // Padding to ensure content isn't hidden by the collapsed drawer
@@ -111,24 +133,31 @@ struct HomeView: View {
                         ScrollView(isExpanded ? .vertical : .init()) {
                             VStack(spacing: 20) {
                                 ForEach(viewModel.questTasks) { task in
-                                    TaskCard(
-                                        icon: task.icon,
-                                        iconBackgroundColor: task.iconBackgroundColor,
-                                        cardBackgroundColor: task.cardBackgroundColor,
-                                        title: task.title,
-                                        currentProgress: task.currentProgress,
-                                        totalProgress: task.totalProgress,
-                                        progressBarColor: task.progressBarColor,
-                                        progressBarBackgroundColor: task.progressBarBackgroundColor,
-                                        shadowColor: task.shadowColor
-                                    )
+                                    Button {
+                                        if let taskType = TaskType(rawValue: task.id.replacingOccurrences(of: "quest_", with: "")) {
+                                            viewModel.activeTask = taskType
+                                        }
+                                    } label: {
+                                        TaskCard(
+                                            icon: task.icon,
+                                            iconBackgroundColor: task.iconBackgroundColor,
+                                            cardBackgroundColor: task.cardBackgroundColor,
+                                            title: task.title,
+                                            currentProgress: task.currentProgress,
+                                            totalProgress: task.totalProgress,
+                                            unit: task.unit,
+                                            shadowColor: task.shadowColor
+                                        )
+                                    }
+                                    .buttonStyle(.plain)
+                                    .disabled(task.currentProgress >= task.totalProgress)
                                 }
                             }
                         }
                         .disabled(!isExpanded) // Only scroll if expanded
                     }
                     .padding(.horizontal, 32)
-                    .padding(.bottom, 100)
+                    .padding(.bottom, 150)
                     .background(Color.white)
                     .clipShape(RoundedCornerShape(radius: 48, corners: [.topLeft, .topRight]))
                 }
@@ -160,6 +189,53 @@ struct HomeView: View {
             }
             .background(Color.App.Gray.light)
             .ignoresSafeArea(edges: .bottom)
+        }
+        .fullScreenCover(item: $viewModel.activeTask) { taskType in
+            switch taskType {
+            case .eye:
+                EyeTaskFlowView(questID: "quest_eye", onComplete: { xp in
+                    viewModel.completeTask(id: "quest_eye", earnedXP: xp)
+                })
+            case .hand:
+                HandTaskFlowView(questID: "quest_hand", onComplete: { xp in
+                    viewModel.completeTask(id: "quest_hand", earnedXP: xp)
+                })
+            case .head:
+                HeadTaskFlowView(questID: "quest_head", onComplete: { xp in
+                    viewModel.completeTask(id: "quest_head", earnedXP: xp)
+                })
+            case .walk:
+                WalkTaskFlowView(onComplete: { xp in
+                    viewModel.completeTask(id: "quest_walk", earnedXP: xp)
+                })
+            }
+        }
+        .fullScreenCover(isPresented: $showingStreak) {
+            let streakVM = StreakViewModel()
+            // Set the streak to match the user's actual streak
+            let _ = { streakVM.currentStreak = viewModel.userProfile.streak }()
+            StreakOverlayView(viewModel: streakVM, onDismiss: { showingStreak = false })
+        }
+        .fullScreenCover(isPresented: $prefs.showLevelUpAlert) {
+            LevelUpOverlayView(newLevel: prefs.newlyReachedLevel) {
+                prefs.showLevelUpAlert = false
+            }
+        }
+        .fullScreenCover(isPresented: $showingInfo) {
+            InfoView(
+                userName: viewModel.userProfile.name,
+                gender: viewModel.userProfile.gender,
+                onDismiss: { showingInfo = false }
+            )
+        }
+        .fullScreenCover(isPresented: $showingShare) {
+            ShareView(
+                userName: viewModel.userProfile.name,
+                gender: viewModel.userProfile.gender,
+                characterStats: viewModel.characterStats,
+                userProfile: viewModel.userProfile,
+                onDismiss: { showingShare = false }
+            )
         }
     }
 }

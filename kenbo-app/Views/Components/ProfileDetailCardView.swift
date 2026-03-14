@@ -11,6 +11,8 @@ public struct ProfileDetailCardView: View {
     public let staminaCurrent: Int
     public let staminaMax: Int
     
+    public let showButtons: Bool
+    
     // Actions
     public let onInfoTapped: () -> Void
     public let onShareTapped: () -> Void
@@ -21,7 +23,8 @@ public struct ProfileDetailCardView: View {
         powerCurrent: Int, powerMax: Int,
         staminaCurrent: Int, staminaMax: Int,
         onInfoTapped: @escaping () -> Void,
-        onShareTapped: @escaping () -> Void
+        onShareTapped: @escaping () -> Void,
+        showButtons: Bool = true
     ) {
         self.imageName = imageName
         self.healthCurrent = healthCurrent
@@ -30,6 +33,7 @@ public struct ProfileDetailCardView: View {
         self.powerMax = powerMax
         self.staminaCurrent = staminaCurrent
         self.staminaMax = staminaMax
+        self.showButtons = showButtons
         self.onInfoTapped = onInfoTapped
         self.onShareTapped = onShareTapped
     }
@@ -115,31 +119,34 @@ public struct ProfileDetailCardView: View {
             
             
             // The Buttons
-            HStack(spacing: 16) {
-                Button(action: onInfoTapped) {
-                    Circle()
-                        .fill(Color.App.Purple.dark)
-                        .frame(width: 50, height: 50)
-                        .overlay(
-                            Image(systemName: "info")
-                                .font(.system(size: 22, weight: .bold))
-                                .foregroundColor(.white)
-                                .offset(y: -2)
-                        )
+            if showButtons {
+                HStack(spacing: 16) {
+                    Button(action: onInfoTapped) {
+                        Circle()
+                            .fill(Color.App.Purple.dark)
+                            .frame(width: 50, height: 50)
+                            .overlay(
+                                Image(systemName: "info")
+                                    .font(.system(size: 22, weight: .bold))
+                                    .foregroundColor(.white)
+                                    .offset(y: -2)
+                            )
+                    }
+                    
+                    Button(action: onShareTapped) {
+                        Circle()
+                            .fill(Color.App.Purple.dark)
+                            .frame(width: 50, height: 50)
+                            .overlay(
+                                Image(systemName: "arrow.turn.up.right")
+                                    .font(.system(size: 18, weight: .bold))
+                                    .foregroundColor(.white)
+                                    .offset(y: -2)
+                            )
+                    }
                 }
-                
-                Button(action: onShareTapped) {
-                    Circle()
-                        .fill(Color.App.Purple.dark)
-                        .frame(width: 50, height: 50)
-                        .overlay(
-                            Image(systemName: "arrow.turn.up.right")
-                                .font(.system(size: 18, weight: .bold))
-                                .foregroundColor(.white)
-                                .offset(y: -2)
-                        )
-                }
-            }.padding(10)
+                .padding(10)
+            }
       
          
             

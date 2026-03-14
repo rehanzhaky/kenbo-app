@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct WalkTaskResultView: View {
+    @ObservedObject var viewModel: WalkTaskViewModel
+    
     var body: some View {
         ResponseTemplateView(
             title: "Jalan santay aja ya",
@@ -11,11 +13,10 @@ struct WalkTaskResultView: View {
             centerContent: {
               
                 VStack(spacing: 32) {
-                 
                     TrackIndicator(iconType: .shoe)
                     TrackResultText(
-                        calories: 30,
-                        secondMetricValue: 20,
+                        calories: 30, // Could be calculated based on steps
+                        secondMetricValue: viewModel.stepsTaken,
                         secondMetricLabel: "Step Goals",
                         secondMetricUnit: "Steps"
                     )
@@ -25,7 +26,7 @@ struct WalkTaskResultView: View {
             bottomContent: {
                 
                 PrimaryButton(title: "Lanjut") {
-                    // Finalize task action
+                    viewModel.finishTask()
                 }
                
             }
@@ -34,5 +35,5 @@ struct WalkTaskResultView: View {
 }
 
 #Preview {
-    WalkTaskResultView()
+    WalkTaskAnnouncementView(viewModel: WalkTaskViewModel(onComplete: { _ in }))
 }

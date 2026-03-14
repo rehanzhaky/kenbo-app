@@ -2,6 +2,8 @@ import SwiftUI
 
 struct RewardMotivationView: View {
     @Environment(\.dismiss) var dismiss
+    let content: String
+    let onRefresh: () -> Void
     
     var body: some View {
         ZStack {
@@ -18,18 +20,20 @@ struct RewardMotivationView: View {
                         .padding(.top, 24)
                     
                     VStack(spacing: 8) {
-                        Text("Yuk kita Push up!")
+                        Text("Motivasi Hari Ini")
                             .font(.system(size: 28, weight: .bold))
                             .foregroundColor(.white)
                         
-                        Text("Arahkan hpmu ke arah bawah sekarang dan jika sudah siap jangan lupa tekan tombolnya ya")
-                            .font(.system(size: 14))
-                            .foregroundColor(.white.opacity(0.8))
+                        Text(content)
+                            .font(.system(size: 18, weight: .medium))
+                            .foregroundColor(.white.opacity(0.9))
                             .multilineTextAlignment(.center)
                             .padding(.horizontal, 24)
+                            .italic()
                     }
                     .padding(.bottom, 32)
                 }
+                .frame(maxWidth: .infinity)
                 .background(Color.App.Purple.dark)
                 .cornerRadius(12)
                 .padding(.horizontal, 40)
@@ -38,6 +42,7 @@ struct RewardMotivationView: View {
                 PrimaryButton(title: "Tutup") {
                     dismiss()
                 }
+                .padding(.horizontal, 40)
                 .padding(.top, 20)
             }
         }
@@ -45,5 +50,5 @@ struct RewardMotivationView: View {
 }
 
 #Preview {
-    RewardMotivationView()
+    RewardMotivationView(content: "Semangat xixi!", onRefresh: {})
 }

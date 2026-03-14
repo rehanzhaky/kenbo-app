@@ -2,19 +2,31 @@ import SwiftUI
 
 struct RewardTitleView: View {
     @Environment(\.dismiss) var dismiss
+    @ObservedObject private var prefs = UserPreferences.shared
     let userName: String
+    let title: String
     
     var body: some View {
         ResponseTemplateView(
             imageName: "link_sprite",
-            title: "Congratulation\n\(userName)",
-            subtitle: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+            title: "Selamat Untukmu\n\(userName)",
+            subtitle: "Kamu telah berhasil mendapatkan gelar baru karena konsistensimu xixi!",
             topContent: {
-                EarnTitleView(title: "Si Bugar")
+                EarnTitleView(title: title)
             },
             bottomContent: {
-                PrimaryButton(title: "Tutup") {
-                    dismiss()
+                VStack(spacing: 16) {
+                    PrimaryButton(
+                        title: prefs.titleBadge == title ? "Gelar Dipakai" : "Pakai Gelar",
+                        action: {
+                            prefs.equipTitleBadge(title)
+                        },
+                        isDisabled: prefs.titleBadge == title
+                    )
+                    
+                    SecondaryButton(title: "Tutup") {
+                        dismiss()
+                    }
                 }
             }
         )
@@ -22,5 +34,5 @@ struct RewardTitleView: View {
 }
 
 #Preview {
-    RewardTitleView(userName: "Fandy")
+    RewardTitleView(userName: "Fandy", title: "Ksatria Bugar")
 }
