@@ -39,7 +39,7 @@ struct LevelUpOverlayView: View {
                         Circle()
                             .fill(Color.App.Yellow.primary)
                             .frame(width: 140, height: 140)
-                            .shadow(color: Color.black.opacity(0.2), radius: 0, x: 0, y: 8)
+                            .shadow(color: Color.white.opacity(0.2), radius: 0, x: 0, y: 8)
                         
                         Circle()
                             .stroke(Color.white, lineWidth: 6)
