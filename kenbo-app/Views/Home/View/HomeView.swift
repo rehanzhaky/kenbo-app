@@ -16,6 +16,8 @@ struct HomeView: View {
     @State private var lastOffset: CGFloat = 0
     @State private var isExpanded: Bool = false
     @State private var showingStreak: Bool = false
+    @State private var showingInfo: Bool = false
+    @State private var showingShare: Bool = false
     
     
     // Constants for drawer positioning
@@ -79,8 +81,12 @@ struct HomeView: View {
                             powerMax: viewModel.characterStats.powerMax,
                             staminaCurrent: viewModel.characterStats.staminaCurrent,
                             staminaMax: viewModel.characterStats.staminaMax,
-                            onInfoTapped: {},
-                            onShareTapped: {}
+                            onInfoTapped: {
+                                showingInfo = true
+                            },
+                            onShareTapped: {
+                                showingShare = true
+                            }
                         )
                         
                         // Padding to ensure content isn't hidden by the collapsed drawer
@@ -214,6 +220,22 @@ struct HomeView: View {
             LevelUpOverlayView(newLevel: prefs.newlyReachedLevel) {
                 prefs.showLevelUpAlert = false
             }
+        }
+        .fullScreenCover(isPresented: $showingInfo) {
+            InfoView(
+                userName: viewModel.userProfile.name,
+                gender: viewModel.userProfile.gender,
+                onDismiss: { showingInfo = false }
+            )
+        }
+        .fullScreenCover(isPresented: $showingShare) {
+            ShareView(
+                userName: viewModel.userProfile.name,
+                gender: viewModel.userProfile.gender,
+                characterStats: viewModel.characterStats,
+                userProfile: viewModel.userProfile,
+                onDismiss: { showingShare = false }
+            )
         }
     }
 }
