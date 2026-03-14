@@ -83,7 +83,7 @@ public struct RewardCardView: View {
                     
                     // Text
                     Text(text)
-                        .font(.system(size: 14, weight: .regular))
+                        .font(.system(size: 16, weight: .bold))
                         .foregroundColor(style.textColor)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .multilineTextAlignment(.leading)
