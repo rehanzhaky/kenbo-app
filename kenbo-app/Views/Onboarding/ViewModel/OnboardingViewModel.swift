@@ -26,6 +26,11 @@ class OnboardingViewModel: ObservableObject {
         userName        = UserPreferences.shared.userName
         selectedGender  = UserPreferences.shared.selectedGender
         selectedSession = UserPreferences.shared.selectedSession
+        
+        // Immediately bypass onboarding if already done
+        if UserPreferences.shared.hasCompletedOnboarding {
+            showHome = true
+        }
     }
     
     // MARK: - Navigation Helpers

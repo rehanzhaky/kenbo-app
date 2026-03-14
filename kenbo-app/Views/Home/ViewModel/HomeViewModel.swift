@@ -145,17 +145,13 @@ class HomeViewModel: ObservableObject {
         let currentHour = calendar.component(.hour, from: now)
         let session = prefs.selectedSession
 
-        // Filter the catalogue to only show tasks that have "unlocked" for the user's session
-        let unlockedTasks = QuestScheduler.shared.getUnlockedTasks(
-            from: HomeViewModel.catalogue,
-            session: session,
-            currentHour: currentHour
-        )
+        // DEV MODE: Unlock all tasks for testing instead of using QuestScheduler
+        let unlockedTasks = HomeViewModel.catalogue
         
         let tasks: [QuestTask] = unlockedTasks.map { task in
             var t = task
             let done = completedIDs.filter { $0.hasPrefix(task.id) }.count
-            t.currentProgress = min(done, task.totalProgress)
+            t.currentProgress = done > 0 ? task.totalProgress : 0
             return t
         }
 
@@ -207,6 +203,9 @@ class HomeViewModel: ObservableObject {
 
         // Refresh published state
         refreshState()
+        
+        // Dismiss the active task modal
+        activeTask = nil
     }
 
     private func xpReward(for id: String) -> Int {
@@ -222,16 +221,13 @@ class HomeViewModel: ObservableObject {
         let currentHour = Calendar.current.component(.hour, from: Date())
         let session = prefs.selectedSession
         
-        let unlockedTasks = QuestScheduler.shared.getUnlockedTasks(
-            from: HomeViewModel.catalogue,
-            session: session,
-            currentHour: currentHour
-        )
+        // DEV MODE: Unlock all tasks for testing instead of using QuestScheduler
+        let unlockedTasks = HomeViewModel.catalogue
         
         var tasks: [QuestTask] = unlockedTasks.map { task in
             var t = task
             let done = completedIDs.filter { $0.hasPrefix(task.id) }.count
-            t.currentProgress = min(done, task.totalProgress)
+            t.currentProgress = done > 0 ? task.totalProgress : 0
             return t
         }
         let completedCount = tasks.filter { $0.currentProgress >= $0.totalProgress }.count

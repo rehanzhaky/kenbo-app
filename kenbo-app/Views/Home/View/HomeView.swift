@@ -9,6 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
     @StateObject private var viewModel: HomeViewModel
+    @ObservedObject private var prefs = UserPreferences.shared
     
     // Drawer State
     @State private var drawerOffset: CGFloat = 0
@@ -138,6 +139,7 @@ struct HomeView: View {
                                         )
                                     }
                                     .buttonStyle(.plain)
+                                    .disabled(task.currentProgress >= task.totalProgress)
                                 }
                             }
                         }
@@ -184,7 +186,7 @@ struct HomeView: View {
                     viewModel.completeTask(id: "quest_eye", earnedXP: xp)
                 })
             case .hand:
-                EyeTaskFlowView(questID: "quest_hand", onComplete: { xp in
+                HandTaskFlowView(questID: "quest_hand", onComplete: { xp in
                     viewModel.completeTask(id: "quest_hand", earnedXP: xp)
                 })
             case .head:
@@ -208,6 +210,11 @@ struct HomeView: View {
             // Set the streak to match the user's actual streak
             let _ = { streakVM.currentStreak = viewModel.userProfile.streak }()
             StreakOverlayView(viewModel: streakVM, onDismiss: { showingStreak = false })
+        }
+        .fullScreenCover(isPresented: $prefs.showLevelUpAlert) {
+            LevelUpOverlayView(newLevel: prefs.newlyReachedLevel) {
+                prefs.showLevelUpAlert = false
+            }
         }
     }
 }

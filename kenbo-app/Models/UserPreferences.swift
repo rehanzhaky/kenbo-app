@@ -73,16 +73,26 @@ final class UserPreferences: ObservableObject {
     /// XP needed to reach the NEXT level from the current one.
     var xpForNextLevel: Int { level * 100 }
     
+    @Published var showLevelUpAlert: Bool = false
+    @Published var newlyReachedLevel: Int = 1
+    
     /// Add XP and resolve level-ups automatically.
     func addXP(_ amount: Int) {
         var xp    = currentXP + amount
         var lv    = level
+        let initialLv = level
+        
         while xp >= lv * 100 {
             xp -= lv * 100
             lv  += 1
         }
         currentXP = xp
         level     = lv
+        
+        if lv > initialLv {
+            newlyReachedLevel = lv
+            showLevelUpAlert = true
+        }
     }
     
     // MARK: - Streak (24-hour cycle)
@@ -106,18 +116,26 @@ final class UserPreferences: ObservableObject {
 
         let now      = Date()
         let calendar = Calendar.current
+        
         defer { lastOpenedDate = now }
 
-        guard let last = lastOpenedDate else { return false }  // very first open post-setup
+        guard let last = lastOpenedDate else { 
+            // First time opening after onboarding
+            streak = 1
+            return true
+        }
 
-        let daysSince = calendar.dateComponents([.day], from: last, to: now).day ?? 0
+        // Compare midnight to midnight accurately
+        let startOfLast = calendar.startOfDay(for: last)
+        let startOfNow = calendar.startOfDay(for: now)
+        let daysSince = calendar.dateComponents([.day], from: startOfLast, to: startOfNow).day ?? 0
 
         switch daysSince {
         case 1:
             streak += 1       // opened exactly next day ✅
             return true
         case let d where d > 1:
-            streak = 1        // missed a day – reset to 1, not 0
+            streak = 1        // missed a day – reset to 1
             return false
         default:
             return false      // same day – no change

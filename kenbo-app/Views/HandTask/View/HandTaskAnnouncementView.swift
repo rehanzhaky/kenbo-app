@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct HandTaskAnnouncementView: View {
-    @Environment(\.dismiss) var dismiss
+    @ObservedObject var viewModel: HandTaskViewModel
     
     var body: some View {
         ResponseTemplateView(
@@ -13,7 +13,7 @@ struct HandTaskAnnouncementView: View {
             },
             bottomContent: {
                 PrimaryButton(title: "Gass") {
-                    // Navigate to HandTaskTrackingView
+                    viewModel.beginTracking()
                 }
                 .padding(.top, 20)
             }
@@ -22,5 +22,5 @@ struct HandTaskAnnouncementView: View {
 }
 
 #Preview {
-    HandTaskAnnouncementView()
+    HandTaskAnnouncementView(viewModel: HandTaskViewModel(onComplete: { _ in }))
 }

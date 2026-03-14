@@ -63,10 +63,12 @@ class WalkTaskViewModel: ObservableObject {
             }
             
             DispatchQueue.main.async {
-                self.stepsTaken = data.numberOfSteps.intValue
-                
-                if self.stepsTaken >= self.stepGoal {
-                    self.completeTracking()
+                withAnimation(.linear(duration: 0.2)) {
+                    self.stepsTaken = data.numberOfSteps.intValue
+                    
+                    if self.stepsTaken >= self.stepGoal {
+                        self.completeTracking()
+                    }
                 }
             }
         }
