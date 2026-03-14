@@ -9,6 +9,10 @@ class QuestScheduler {
     
     /// Returns only the tasks that have "unlocked" based on the current hour and user's session.
     func getUnlockedTasks(from allTasks: [QuestTask], session: String, currentHour: Int) -> [QuestTask] {
+        if AppConfig.isDevelopment {
+            return allTasks // Bypass time lock for testing
+        }
+        
         return allTasks.filter { task in
             let unlock = task.unlockHour(session)
             return currentHour >= unlock

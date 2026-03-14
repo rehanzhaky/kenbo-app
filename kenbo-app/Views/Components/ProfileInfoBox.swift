@@ -18,7 +18,7 @@ struct ProfileInfoBox: View {
                 
                 // Dynamic Badge
                 if let badge = titleBadge {
-                    Text("Si \(badge)")
+                    Text(badge)
                         .font(.custom("Montserrat-Bold", size: 10))
                         .foregroundColor(.white)
                         .padding(.horizontal, 8)

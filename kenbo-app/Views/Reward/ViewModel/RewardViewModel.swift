@@ -121,7 +121,7 @@ class RewardViewModel: ObservableObject {
             let isLocked = currentLevel < requiredLevel
             return RewardItem(
                 type: .title,
-                title: "Gelar: \(text)",
+                title: text,
                 icon: "medal.fill",
                 style: palette[(index + 2) % palette.count],
                 buttonTitle: isLocked ? "Butuh Level \(requiredLevel)" : "Lihat Gelar",
