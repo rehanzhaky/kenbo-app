@@ -21,17 +21,17 @@ struct StatBarCard: View {
                 // Outer circle
                 Circle()
                     .fill(outerCircleColor)
-                    .frame(width: 86, height: 86)
+                    .frame(width: 60, height: 60)
                 
                 // Main circle
                 Circle()
                     .fill(color)
-                    .frame(width: 70, height: 70)
+                    .frame(width: 50, height: 50)
                 
                 Image(icon)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 32, height: 32)
+                    .frame(width: 22, height: 22)
                     .foregroundColor(.white)
             }
             .zIndex(1)
@@ -41,28 +41,28 @@ struct StatBarCard: View {
                 // Background
                 Capsule()
                     .fill(lightColor)
-                    .frame(height: 70)
+                    .frame(height: 50)
                 
                 // Progress
                 GeometryReader { geometry in
                     Capsule()
                         .fill(color)
-                        .frame(width: geometry.size.width * progress, height: 70)
+                        .frame(width: geometry.size.width * progress, height: 50)
                 }
-                .frame(height: 70)
+                .frame(height: 50)
                 
                 // Text
                 HStack {
                     Spacer()
                     Text("\(current)/\(max) \(unit)")
-                        .font(.system(size: 18, weight: .bold))
+                        .font(.system(size: 14, weight: .bold))
                         .foregroundColor(.white)
-                        .padding(.trailing, 24)
+                        .padding(.trailing, 16)
                 }
             }
-            .padding(.leading, -35)
+            .padding(.leading, -25)
         }
-        .frame(height: 86)
+        .frame(height: 60)
     }
 }
 
