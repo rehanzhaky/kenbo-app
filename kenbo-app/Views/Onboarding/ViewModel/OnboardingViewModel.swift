@@ -55,7 +55,16 @@ class OnboardingViewModel: ObservableObject {
     /// Called on the final screen. Persists everything and signals completion.
     func finishOnboarding() {
         guard !userName.isEmpty else { return }
-        UserPreferences.shared.hasCompletedOnboarding = true
+        let prefs = UserPreferences.shared
+        prefs.hasCompletedOnboarding = true
+        
+        // Gamification: Day 1 starts the moment the user completes setup
+        if prefs.streak == 0 {
+            prefs.streak = 1
+            // Seed lastOpenedDate so tomorrow's open correctly counts as Day 2
+            UserDefaults.standard.set(Date(), forKey: "lastOpenedDate")
+        }
+        
         withAnimation {
             showHome = true
         }

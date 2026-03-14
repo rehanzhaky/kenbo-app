@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct WalkTaskAnnouncementView: View {
-    @Environment(\.dismiss) var dismiss
+    @ObservedObject var viewModel: WalkTaskViewModel
     
     var body: some View {
         ResponseTemplateView(
@@ -13,7 +13,7 @@ struct WalkTaskAnnouncementView: View {
             },
             bottomContent: {
                 PrimaryButton(title: "Gass") {
-                    // Navigate to next page action
+                    viewModel.beginTracking()
                 }
                 .padding(.top, 20)
             }
@@ -22,5 +22,5 @@ struct WalkTaskAnnouncementView: View {
 }
 
 #Preview {
-    WalkTaskAnnouncementView()
+    WalkTaskAnnouncementView(viewModel: WalkTaskViewModel(onComplete: { _ in }))
 }

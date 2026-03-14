@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct WalkTaskTrackingView: View {
-    @State private var steps: Int = 10
+    @ObservedObject var viewModel: WalkTaskViewModel
     
     var body: some View {
         ResponseTemplateView(
@@ -12,25 +12,25 @@ struct WalkTaskTrackingView: View {
             },
             centerContent: {
                 TrackIndicator(iconType: .shoe) {
-                    TrackText(value: steps, unit: "Steps")
+                    TrackText(value: viewModel.stepsTaken, unit: "Steps")
+                }
+                .onTapGesture {
+                    // Hidden helper for Simulator testing
+                    #if targetEnvironment(simulator)
+                    viewModel.invokeDebugStep()
+                    #endif
                 }
             },
             bottomContent: {
                 VStack(spacing: 8) {
                     ProgressBar(
-                        progress: 0.5,
+                        progress: viewModel.progress,
                         color: Color.App.Purple.primary,
                         backgroundColor: Color.App.Purple.light,
-                        height: 20
+                        height: 20,
+                        text: "\(viewModel.stepsTaken) / \(viewModel.stepGoal) Steps",
+                        textColor: .white
                     )
-                    .frame(width: 300)
-                    
-                    HStack {
-                        Spacer()
-                        Text("10 Menit")
-                            .font(.system(size: 14, weight: .bold))
-                            .foregroundColor(Color.App.Purple.light)
-                    }
                     .frame(width: 300)
                 }
                 .padding(.top, 40)
@@ -40,5 +40,5 @@ struct WalkTaskTrackingView: View {
 }
 
 #Preview {
-    WalkTaskTrackingView()
+    WalkTaskTrackingView(viewModel: WalkTaskViewModel(onComplete: { _ in }))
 }

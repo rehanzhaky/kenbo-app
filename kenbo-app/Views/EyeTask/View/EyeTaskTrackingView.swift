@@ -1,10 +1,13 @@
 import SwiftUI
 
 struct EyeTaskTrackingView: View {
+    @ObservedObject var viewModel: EyeTaskViewModel
+    @State private var isPulsing = false
+
     var body: some View {
         ResponseTemplateView(
-            title: "Putar Kepala\ndulu ya",
-            subtitle: "Sambil nikmati tuh rileksnya dulu biar enak juga kan",
+            title: "Fokuskan Matamu\nke Layar",
+            subtitle: "Rileks dan ikuti gerakan yang ada di layar ya, biar matamu segar kembali",
             backgroundColor: Color.App.Purple.primary,
             titleColor: .white,
             subtitleColor: Color.App.Purple.light,
@@ -13,24 +16,46 @@ struct EyeTaskTrackingView: View {
             },
             centerContent: {
                 ZStack {
-                    // Camera Scanning Placeholder
+                    // Outer pulse ring
                     Circle()
-                        .fill(Color(hex: "D9D9D9")) // Gray placeholder
+                        .stroke(Color.white.opacity(0.25), lineWidth: 12)
+                        .frame(width: 280, height: 280)
+                        .scaleEffect(isPulsing ? 1.08 : 1.0)
+                        .opacity(isPulsing ? 0.4 : 0.7)
+                        .animation(
+                            .easeInOut(duration: 1.2).repeatForever(autoreverses: true),
+                            value: isPulsing
+                        )
+
+                    // Camera Scanning Circle
+                    Circle()
+                        .fill(Color(hex: "D9D9D9"))
                         .frame(width: 260, height: 260)
-                    
+
                     Circle()
                         .stroke(Color.white, lineWidth: 6)
                         .frame(width: 260, height: 260)
+
+                    // Scan line animation
+                    VStack(spacing: 4) {
+                        Image(systemName: "eye.fill")
+                            .font(.system(size: 48))
+                            .foregroundColor(.white.opacity(0.6))
+                        Text("Scanning...")
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundColor(.white.opacity(0.7))
+                    }
                 }
+                .onAppear { isPulsing = true }
             },
             bottomContent: {
                 VStack(spacing: 8) {
                     ProgressBar(
-                        progress: 0.5,
+                        progress: viewModel.progress,
                         color: .white,
                         backgroundColor: Color.App.Purple.light.opacity(0.5),
                         height: 20,
-                        text: "1 Menit",
+                        text: viewModel.timeLabel,
                         textColor: .white
                     )
                     .frame(width: 300)
@@ -42,5 +67,5 @@ struct EyeTaskTrackingView: View {
 }
 
 #Preview {
-    EyeTaskTrackingView()
+    EyeTaskTrackingView(viewModel: EyeTaskViewModel(onComplete: { _ in }))
 }

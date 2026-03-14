@@ -2,6 +2,8 @@ import SwiftUI
 
 struct RewardStoryView: View {
     @Environment(\.dismiss) var dismiss
+    let content: String
+    let onRefresh: () -> Void
     
     // Drawer State
     @State private var drawerOffset: CGFloat = 0
@@ -23,7 +25,7 @@ struct RewardStoryView: View {
                         // Title
                         HStack {
                             Spacer()
-                            Text("Cerita Lucu")
+                            Text("Cerita Absurd Academy")
                                 .font(.system(size: 28, weight: .bold))
                                 .foregroundColor(Color.App.Purple.dark)
                             Spacer()
@@ -32,25 +34,29 @@ struct RewardStoryView: View {
                         
                         // Story Text
                         ScrollView {
-                            Text("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.")
-                                .font(.system(size: 16))
-                                .foregroundColor(.black)
-                                .lineSpacing(4)
-                                .multilineTextAlignment(.center)
+                            Text(content)
+                                .font(.system(size: 16, weight: .medium))
+                                .foregroundColor(.black.opacity(0.8))
+                                .lineSpacing(6)
+                                .multilineTextAlignment(.leading)
                                 .padding(.horizontal, 10)
                         }
                         
                         Spacer()
                         
-                        // Tutup Button
-                        HStack {
-                            Spacer()
-                            PrimaryButton(title: "Tutup") {
+                        // Action Buttons
+                        VStack(spacing: 12) {
+                            PrimaryButton(title: "Cerita Lain Kuy xixi") {
+                                onRefresh()
+                            }
+                            
+                            Button("Tutup") {
                                 dismiss()
                             }
-                            Spacer()
+                            .foregroundColor(Color.App.Gray.primary)
+                            .font(.system(size: 16, weight: .bold))
                         }
-                        .padding(.bottom, max(geometry.safeAreaInsets.bottom, 80))
+                        .padding(.bottom, max(geometry.safeAreaInsets.bottom, 40))
                     }
                     .padding(.horizontal, 32)
                     .background(Color.white)
@@ -85,5 +91,5 @@ struct RewardStoryView: View {
 }
 
 #Preview {
-    RewardStoryView()
+    RewardStoryView(content: "Once upon a time xixi...", onRefresh: {})
 }

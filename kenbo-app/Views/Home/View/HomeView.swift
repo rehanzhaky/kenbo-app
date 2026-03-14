@@ -14,6 +14,7 @@ struct HomeView: View {
     @State private var drawerOffset: CGFloat = 0
     @State private var lastOffset: CGFloat = 0
     @State private var isExpanded: Bool = false
+    @State private var showingRewards: Bool = false
     
     // Constants for drawer positioning
     private let collapsedOffset: CGFloat = 680 // Increased to show all profile UI
@@ -46,7 +47,9 @@ struct HomeView: View {
                             currentXP: viewModel.userProfile.currentXP,
                             maxXP: viewModel.userProfile.maxXP,
                             completedTasks: viewModel.userProfile.completedTasks,
-                            totalTasks: viewModel.userProfile.totalTasks
+                            totalTasks: viewModel.userProfile.totalTasks,
+                            titleBadge: viewModel.userProfile.titleBadge,
+                            onTap: { showingRewards = true }
                         )
                         
                         // Profile Title
@@ -111,17 +114,23 @@ struct HomeView: View {
                         ScrollView(isExpanded ? .vertical : .init()) {
                             VStack(spacing: 20) {
                                 ForEach(viewModel.questTasks) { task in
-                                    TaskCard(
-                                        icon: task.icon,
-                                        iconBackgroundColor: task.iconBackgroundColor,
-                                        cardBackgroundColor: task.cardBackgroundColor,
-                                        title: task.title,
-                                        currentProgress: task.currentProgress,
-                                        totalProgress: task.totalProgress,
-                                        progressBarColor: task.progressBarColor,
-                                        progressBarBackgroundColor: task.progressBarBackgroundColor,
-                                        shadowColor: task.shadowColor
-                                    )
+                                    Button {
+                                        if let taskType = TaskType(rawValue: task.id.replacingOccurrences(of: "quest_", with: "")) {
+                                            viewModel.activeTask = taskType
+                                        }
+                                    } label: {
+                                        TaskCard(
+                                            icon: task.icon,
+                                            iconBackgroundColor: task.iconBackgroundColor,
+                                            cardBackgroundColor: task.cardBackgroundColor,
+                                            title: task.title,
+                                            currentProgress: task.currentProgress,
+                                            totalProgress: task.totalProgress,
+                                            unit: task.unit,
+                                            shadowColor: task.shadowColor
+                                        )
+                                    }
+                                    .buttonStyle(.plain)
                                 }
                             }
                         }
@@ -160,6 +169,32 @@ struct HomeView: View {
             }
             .background(Color.App.Gray.light)
             .ignoresSafeArea(edges: .bottom)
+        }
+        .fullScreenCover(item: $viewModel.activeTask) { taskType in
+            switch taskType {
+            case .eye:
+                EyeTaskFlowView(questID: "quest_eye", onComplete: { xp in
+                    viewModel.completeTask(id: "quest_eye", earnedXP: xp)
+                })
+            case .hand:
+                EyeTaskFlowView(questID: "quest_hand", onComplete: { xp in
+                    viewModel.completeTask(id: "quest_hand", earnedXP: xp)
+                })
+            case .head:
+                EyeTaskFlowView(questID: "quest_head", onComplete: { xp in
+                    viewModel.completeTask(id: "quest_head", earnedXP: xp)
+                })
+            case .walk:
+                WalkTaskFlowView(onComplete: { xp in
+                    viewModel.completeTask(id: "quest_walk", earnedXP: xp)
+                })
+            }
+        }
+        .fullScreenCover(isPresented: $showingRewards) {
+            RewardView(
+                userName: viewModel.userProfile.name,
+                gender: viewModel.userProfile.gender
+            )
         }
     }
 }

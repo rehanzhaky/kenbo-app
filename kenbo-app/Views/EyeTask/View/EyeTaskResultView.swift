@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct EyeTaskResultView: View {
+    @ObservedObject var viewModel: EyeTaskViewModel
+
     var body: some View {
         ResponseTemplateView(
             title: "Bagus Banget",
@@ -30,7 +32,7 @@ struct EyeTaskResultView: View {
             },
             bottomContent: {
                 PrimaryButton(title: "Lanjut") {
-                    // Finalize eye task action
+                    viewModel.finishTask()
                 }
             }
         )
@@ -38,5 +40,5 @@ struct EyeTaskResultView: View {
 }
 
 #Preview {
-    EyeTaskResultView()
+    EyeTaskResultView(viewModel: EyeTaskViewModel(onComplete: { _ in }))
 }

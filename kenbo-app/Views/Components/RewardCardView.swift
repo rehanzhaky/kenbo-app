@@ -31,12 +31,13 @@ public enum RewardCardStyle {
         }
     }
 }
-
 public struct RewardCardView: View {
     public let text: String
     public let iconName: String?
     public let buttonTitle: String
     public let style: RewardCardStyle
+    public let isLocked: Bool
+    public let unlockMessage: String?
     public let action: () -> Void
     
     public init(
@@ -44,12 +45,16 @@ public struct RewardCardView: View {
         iconName: String? = nil,
         buttonTitle: String = "Lihat",
         style: RewardCardStyle,
+        isLocked: Bool = false,
+        unlockMessage: String? = nil,
         action: @escaping () -> Void
     ) {
         self.text = text
         self.iconName = iconName
         self.buttonTitle = buttonTitle
         self.style = style
+        self.isLocked = isLocked
+        self.unlockMessage = unlockMessage
         self.action = action
     }
     
@@ -73,25 +78,27 @@ public struct RewardCardView: View {
                 .frame(width: 60, height: 60)
                 
                 // Text
-                Text(text)
+                Text(isLocked ? (unlockMessage ?? "Locked") : text)
                     .font(.system(size: 14, weight: .regular))
-                    .foregroundColor(style.textColor)
+                    .foregroundColor(isLocked ? .white.opacity(0.8) : style.textColor)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .multilineTextAlignment(.leading)
                     .padding(.top, 4)
             }
+            .opacity(isLocked ? 0.6 : 1.0)
             
             // Button
             Button(action: action) {
-                Text(buttonTitle)
+                Text(isLocked ? "Buka Dulu Yuk" : buttonTitle)
                     .font(.system(size: 16, weight: .bold))
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .frame(height: 50)
-                    .background(style.elementColor)
+                    .background(isLocked ? Color.gray : style.elementColor)
                     .cornerRadius(12)
                     .shadow(color: Color.black.opacity(0.15), radius: 0, x: 0, y: 3)
             }
+            .disabled(isLocked)
             .buttonStyle(PlainButtonStyle()) // prevents blue tinting
         }
         .padding(16)
@@ -120,9 +127,17 @@ struct RewardCardView_Previews: PreviewProvider {
                 ) {}
                 
                 RewardCardView(
-                    text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+                    text: "Unlocked Reward",
                     iconName: "book.fill",
                     style: .blue
+                ) {}
+                
+                RewardCardView(
+                    text: "Locked Reward Content",
+                    iconName: "lock.fill",
+                    style: .blue,
+                    isLocked: true,
+                    unlockMessage: "Capai Streak 3 Hari"
                 ) {}
             }
             .padding()

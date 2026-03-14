@@ -8,7 +8,7 @@ struct RewardView: View {
     @State private var isExpanded: Bool = false
     
     // Constants for drawer positioning
-    private let collapsedOffset: CGFloat = 240 // Positioned closer to Profile Card
+    private let collapsedOffset: CGFloat = 210 // Tighter to Profile Card
     private let expandedOffset: CGFloat = 60
     
     init(userName: String, gender: String) {
@@ -27,11 +27,14 @@ struct RewardView: View {
                         currentXP: viewModel.userProfile.currentXP,
                         maxXP: viewModel.userProfile.maxXP,
                         completedTasks: viewModel.userProfile.completedTasks,
-                        totalTasks: viewModel.userProfile.totalTasks
+                        totalTasks: viewModel.userProfile.totalTasks,
+                        titleBadge: viewModel.userProfile.titleBadge,
+                        onTap: {}
                     )
+                    Spacer()
                 }
                 .padding(.horizontal, 20)
-                .padding(.top, 40)
+                .padding(.top, 20)
                 .opacity(isExpanded ? 0.3 : 1.0)
                 .animation(.easeInOut, value: isExpanded)
                 
@@ -66,28 +69,41 @@ struct RewardView: View {
                             .lineLimit(isExpanded ? nil : 3)
                             .fixedSize(horizontal: false, vertical: true)
                         
-                        // Reward List
-                        ScrollView(isExpanded ? .vertical : .init()) {
-                            VStack(spacing: 20) {
+                        // Reward List (Vertical Scroll View)
+                        ScrollView(.vertical, showsIndicators: false) {
+                            VStack(spacing: 16) {
                                 ForEach(viewModel.rewards) { reward in
                                     RewardCardView(
                                         text: reward.title,
                                         iconName: reward.icon,
                                         buttonTitle: reward.buttonTitle,
-                                        style: reward.style
+                                        style: reward.style,
+                                        isLocked: reward.isLocked,
+                                        unlockMessage: reward.unlockMessage
                                     ) {
                                         viewModel.activeDetail = reward.type
                                     }
                                 }
                             }
+                            .padding(.bottom, 20)
                         }
-                        .disabled(!isExpanded)
+                        .padding(.top, 10)
                     }
                     .padding(.horizontal, 32)
-                    .padding(.bottom, 100)
-                    .background(Color.white)
+                    .padding(.bottom, isExpanded ? 30 : geometry.safeAreaInsets.bottom + 20)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                    .background(
+                        ZStack(alignment: .top) {
+                            Color.white
+                            // Only round the top corners by using a flat rectangle at the bottom
+                            Rectangle()
+                                .fill(Color.white)
+                                .offset(y: 100)
+                        }
+                    )
                     .clipShape(RoundedCornerShape(radius: 48, corners: [.topLeft, .topRight]))
                 }
+                .frame(height: geometry.size.height + 1000) // Ensure it extends far down
                 .offset(y: drawerOffset == 0 ? (isExpanded ? expandedOffset : collapsedOffset) : drawerOffset)
                 .gesture(
                     DragGesture()
@@ -117,11 +133,24 @@ struct RewardView: View {
             .fullScreenCover(item: $viewModel.activeDetail) { type in
                 switch type {
                 case .motivation:
-                    RewardMotivationView()
+                    RewardMotivationView(
+                        content: viewModel.motivationContent,
+                        onRefresh: {
+                            Task { await viewModel.loadAIContent() }
+                        }
+                    )
                 case .story:
-                    RewardStoryView()
+                    RewardStoryView(
+                        content: viewModel.storyContent,
+                        onRefresh: {
+                            Task { await viewModel.loadAIContent() }
+                        }
+                    )
                 case .title:
-                    RewardTitleView(userName: viewModel.userProfile.name)
+                    RewardTitleView(
+                        userName: viewModel.userProfile.name,
+                        title: "Ksatria Bugar"
+                    )
                 }
             }
         }

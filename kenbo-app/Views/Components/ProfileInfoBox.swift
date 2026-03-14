@@ -6,6 +6,7 @@ struct ProfileInfoBox: View {
     let maxXP: Int
     let completedTasks: Int
     let totalTasks: Int
+    let titleBadge: String?
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -15,14 +16,16 @@ struct ProfileInfoBox: View {
                     .font(.custom("Montserrat-Bold", size: 32))
                     .foregroundColor(.black)
                 
-                // "Si Bugar" Badge
-                Text("Si Bugar")
-                    .font(.custom("Montserrat-Bold", size: 10))
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(Color(hex: "BE71FE"))
-                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                // Dynamic Badge
+                if let badge = titleBadge {
+                    Text("Si \(badge)")
+                        .font(.custom("Montserrat-Bold", size: 10))
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Color(hex: "BE71FE"))
+                        .clipShape(RoundedRectangle(cornerRadius: 6))
+                }
             }
             
             // XP Progress Bar
@@ -58,7 +61,8 @@ struct ProfileInfoBox: View {
         currentXP: 200,
         maxXP: 300,
         completedTasks: 4,
-        totalTasks: 7
+        totalTasks: 7,
+        titleBadge: "Bugar"
     )
     .padding()
     .background(Color.white)

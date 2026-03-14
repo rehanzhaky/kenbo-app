@@ -61,11 +61,11 @@ struct ExpArrowIcon: View {
 
 public struct EarnBadgeView: View {
     public let amount: Int
+    @State private var isAnimating = false
     
     public init(amount: Int) {
         self.amount = amount
     }
-    
     public var body: some View {
         HStack(spacing: 16) {
             ExpArrowIcon()
@@ -77,6 +77,13 @@ public struct EarnBadgeView: View {
                 outlineColor: Color.App.Purple.dark,
                 fillColor: .white
             )
+        }
+        .scaleEffect(isAnimating ? 1.0 : 0.5)
+        .opacity(isAnimating ? 1.0 : 0.0)
+        .onAppear {
+            withAnimation(.spring(response: 0.5, dampingFraction: 0.6, blendDuration: 0)) {
+                isAnimating = true
+            }
         }
     }
 }
