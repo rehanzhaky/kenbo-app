@@ -64,7 +64,7 @@ class HomeViewModel: ObservableObject {
     private static let catalogue: [QuestTask] = [
         QuestTask(
             id: "quest_walk",
-            title: "Regangkan kakimu dan jalan santai sebentar.",
+            title: "Regangkan kakimu dan jalan santai sebentar untuk melancarkan peredaran darah.",
             icon: "system:figure.walk",
             iconBackgroundColor: Color(hex: "096A88"),
             cardBackgroundColor: Color(hex: "0A88AE"),
@@ -78,7 +78,7 @@ class HomeViewModel: ObservableObject {
         ),
         QuestTask(
             id: "quest_eye",
-            title: "Lakukan peregangan mata agar tetap segar dan fokus.",
+            title: "Istirahatkan matamu dengan berkedip agar tetap segar dan fokus menatap layar.",
             icon: "system:eye.fill",
             iconBackgroundColor: Color(hex: "D14747"),
             cardBackgroundColor: Color(hex: "FA6F71"),
@@ -92,7 +92,7 @@ class HomeViewModel: ObservableObject {
         ),
         QuestTask(
             id: "quest_head",
-            title: "Putar leher perlahan agar otot tidak tegang.",
+            title: "Putar leher ke kiri dan kanan perlahan agar otot tidak tegang dan pegal.",
             icon: "system:person.bust",
             iconBackgroundColor: Color(hex: "5659BE"),
             cardBackgroundColor: Color(hex: "6A6DDE"),
@@ -106,7 +106,7 @@ class HomeViewModel: ObservableObject {
         ),
         QuestTask(
             id: "quest_hand",
-            title: "Gerakkan pergelangan tanganmu agar rileks dan bebas pegal.",
+            title: "Putar pergelangan tanganmu secara melingkar agar rileks dan bebas pegal.",
             icon: "system:hand.raised.fill",
             iconBackgroundColor: Color(hex: "E18E3E"),
             cardBackgroundColor: Color(hex: "FCB364"),

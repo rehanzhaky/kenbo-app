@@ -6,8 +6,8 @@ struct EyeTaskAnnouncementView: View {
     var body: some View {
         ResponseTemplateView(
             imageName: "night_sky",
-            title: "Enjoy Dulu Yuk",
-            subtitle: "Pegang handphone di tanganmu ya lalu putar pergelangan tanganmu biar rileks dulu nih yee",
+            title: "Istirahatkan Matamu",
+            subtitle: "Tatap layar lurus, lalu kedipkan matamu beberapa kali sesuai instruksi. Biar mata tetap segar dan fokus!",
             topContent: {
                 Color.clear.frame(height: 20)
             },

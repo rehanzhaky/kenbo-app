@@ -6,8 +6,8 @@ struct WalkTaskAnnouncementView: View {
     var body: some View {
         ResponseTemplateView(
             imageName: "knight_walking", // Placeholder for the character walking
-            title: "Jalan sebentar yuk",
-            subtitle: "Jangan duduk dan rebahan terus yuk jalan jalan dulu lah biar enak sedikit ada peregangan wkwk",
+            title: "Jalan Sebentar Yuk",
+            subtitle: "Jangan duduk dan rebahan terus, yuk jalan-jalan dulu biar otot nggak kaku dan peredaran darah lancar!",
             topContent: {
                 Color.clear.frame(height: 20)
             },

@@ -6,8 +6,8 @@ struct HeadTaskAnnouncementView: View {
     var body: some View {
         ResponseTemplateView(
             imageName: "enjoy_truck", // Placeholder for truck pixel art
-            title: "Putar Kepala\nKiri & Kanan",
-            subtitle: "Rileks sejenak, ikuti instruksi putar kepalamu ke kiri dan kanan untuk menyegarkan lehermu.",
+            title: "Peregangan\nLeher Dulu",
+            subtitle: "Rileks sejenak! Ikuti instruksi untuk memutar kepalamu perlahan ke kiri dan kanan biar leher nggak pegal.",
             topContent: {
                 Color.clear.frame(height: 20)
             },

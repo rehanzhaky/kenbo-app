@@ -70,8 +70,14 @@ final class UserPreferences: ObservableObject {
         set { defaults.set(newValue, forKey: Keys.level) }
     }
     
+    // XP table: Requires significantly more XP as level increases.
+    private func requiredXP(for lv: Int) -> Int {
+        if lv <= 1 { return 100 }
+        return lv * lv * 50 // Exponential scaling (e.g. LV2=200, LV3=450, LV4=800, LV5=1250)
+    }
+    
     /// XP needed to reach the NEXT level from the current one.
-    var xpForNextLevel: Int { level * 100 }
+    var xpForNextLevel: Int { requiredXP(for: level) }
     
     @Published var showLevelUpAlert: Bool = false
     @Published var newlyReachedLevel: Int = 1
@@ -82,8 +88,8 @@ final class UserPreferences: ObservableObject {
         var lv    = level
         let initialLv = level
         
-        while xp >= lv * 100 {
-            xp -= lv * 100
+        while xp >= requiredXP(for: lv) {
+            xp -= requiredXP(for: lv)
             lv  += 1
         }
         currentXP = xp
