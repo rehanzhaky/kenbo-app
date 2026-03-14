@@ -228,6 +228,11 @@ final class UserPreferences: ObservableObject {
         }
     }
     
+    func equipTitleBadge(_ title: String) {
+        titleBadge = title
+        defaults.set(title, forKey: "titleBadge")
+    }
+    
     // MARK: - Reward Collection (Phase 5)
     
     @Published var unlockedMotivationCount: Int = 1
@@ -257,4 +262,3 @@ final class UserPreferences: ObservableObject {
         unlockedStoryCount = 1
     }
 }
-

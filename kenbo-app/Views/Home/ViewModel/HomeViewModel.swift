@@ -145,8 +145,8 @@ class HomeViewModel: ObservableObject {
         let currentHour = calendar.component(.hour, from: now)
         let session = prefs.selectedSession
 
-        // DEV MODE: Unlock all tasks for testing instead of using QuestScheduler
-        let unlockedTasks = HomeViewModel.catalogue
+        // PRODUCTION: Fetch mathematically unlocked tasks based on correct current time
+        let unlockedTasks = QuestScheduler.shared.getUnlockedTasks(from: HomeViewModel.catalogue, session: session, currentHour: currentHour)
         
         let tasks: [QuestTask] = unlockedTasks.map { task in
             var t = task
@@ -201,6 +201,9 @@ class HomeViewModel: ObservableObject {
         prefs.stamina = prefs.stamina + restore
         prefs.power   = prefs.power   + restore
 
+        // Inform the scheduler to wipe future recurring reminders for this task (so we don't nag after completion)
+        QuestScheduler.shared.cancelNotifications(for: id)
+
         // Refresh published state
         refreshState()
         
@@ -221,8 +224,8 @@ class HomeViewModel: ObservableObject {
         let currentHour = Calendar.current.component(.hour, from: Date())
         let session = prefs.selectedSession
         
-        // DEV MODE: Unlock all tasks for testing instead of using QuestScheduler
-        let unlockedTasks = HomeViewModel.catalogue
+        // PRODUCTION: Use actual device hour to build live viewable list
+        let unlockedTasks = QuestScheduler.shared.getUnlockedTasks(from: HomeViewModel.catalogue, session: session, currentHour: currentHour)
         
         var tasks: [QuestTask] = unlockedTasks.map { task in
             var t = task

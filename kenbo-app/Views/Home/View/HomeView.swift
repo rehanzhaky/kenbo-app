@@ -56,7 +56,7 @@ struct HomeView: View {
                             maxXP: viewModel.userProfile.maxXP,
                             completedTasks: viewModel.userProfile.completedTasks,
                             totalTasks: viewModel.userProfile.totalTasks,
-                            titleBadge: viewModel.userProfile.titleBadge,
+                            titleBadge: prefs.titleBadge,
                             onTap: { showingRewards = true }
                         )
                         

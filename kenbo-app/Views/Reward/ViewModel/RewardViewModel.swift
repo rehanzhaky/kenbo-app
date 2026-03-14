@@ -20,6 +20,8 @@ struct RewardItem: Identifiable {
     let buttonTitle: String
     let isLocked: Bool
     let unlockMessage: String?
+    let detailContent: String
+    let detailIndex: Int
 }
 
 class RewardViewModel: ObservableObject {
@@ -27,9 +29,12 @@ class RewardViewModel: ObservableObject {
     @Published var rewardDescription: String
     @Published var rewards: [RewardItem] = []
     @Published var activeDetail: RewardDetailType?
+    @Published var activeDetailContent: String = ""
+    @Published var activeDetailIndex: Int = 0
     
-    @Published var motivationContent: String = "Loading..."
-    @Published var storyContent: String = "Loading..."
+    @Published var motivationItems: [String] = ["Loading..."]
+    @Published var storyItems: [String] = ["Loading..."]
+    @Published var titleItems: [String] = ["Ksatria Bugar"]
     
     private let prefs = UserPreferences.shared
     private let ai = AIService.shared
@@ -59,84 +64,127 @@ class RewardViewModel: ObservableObject {
     
     @MainActor
     func loadAIContent() async {
-        // Parallel fetch for speed
-        async let motivation = ai.generateContent(prompt: ai.generateMotivationPrompt())
-        async let story = ai.generateContent(prompt: ai.generateStoryPrompt())
+        // Bypass Gemini completely and load all offline dummy data
+        self.motivationItems = AIService.DummyDataPool.motivations
+        self.storyItems = AIService.DummyDataPool.stories
+        self.titleItems = AIService.DummyDataPool.titles
         
-        self.motivationContent = await motivation ?? "Semangat terus ya xixi!"
-        self.storyContent = await story ?? "Sekali ksatria tetap ksatria, walau lupa angkat besi xixi."
+        // Simulate a tiny loading delay for UI smoothness
+        try? await Task.sleep(nanoseconds: 300_000_000)
+        
+        refreshRewards()
+        refreshActiveDetailContent()
     }
     
     func refreshRewards() {
-        let currentXP = prefs.currentXP
         let currentStreak = prefs.streak
+        let currentLevel = prefs.level
+        let palette: [RewardCardStyle] = [.orange, .green, .red, .blue, .purple, .teal]
         
-        let styles: [RewardCardStyle] = [.orange, .green, .red, .blue, .purple, .teal]
-        
-        // Always include the core ones first to ensure they are visible
-        var newRewards: [RewardItem] = [
-            RewardItem(
+        let motivationRewards = motivationItems.enumerated().map { index, text in
+            // Motivations unlock every 1 Level
+            let requiredLevel = index + 1
+            let isLocked = currentLevel < requiredLevel
+            return RewardItem(
                 type: .motivation,
-                title: "Motivasi Humor Academy #\(prefs.unlockedMotivationCount)",
+                title: "Motivasi Humor Academy #\(index + 1)",
                 icon: "star.fill",
-                style: .orange,
-                buttonTitle: "Lihat Motivasi",
-                isLocked: false,
-                unlockMessage: nil
-            ),
-            RewardItem(
-                type: .story,
-                title: "Cerita Absurd Academy #\(prefs.unlockedStoryCount)",
-                icon: "book.fill",
-                style: .blue,
-                buttonTitle: currentStreak >= 3 ? "Buka Cerita" : "Butuh Streak 3 Hari",
-                isLocked: currentStreak < 3,
-                unlockMessage: "Kumpulkan\n\(3 - currentStreak) Streak lagi yuk!"
-            ),
-            RewardItem(
-                type: .title,
-                title: "Gelar Ksatria Bugar",
-                icon: "medal.fill",
-                style: .green,
-                buttonTitle: prefs.titleBadge != nil ? "Lihat Gelar" : "Selesaikan Semua Quest",
-                isLocked: prefs.titleBadge == nil,
-                unlockMessage: "Kumpulkan\nXP lebih banyak lagi yuk!"
-            )
-        ]
-        
-        // Generate additional random items to fill out the list
-        for i in 1...7 {
-            let typeOptions: [RewardDetailType] = [.motivation, .story, .title]
-            let randomType = typeOptions.randomElement()!
-            let randomStyle = styles.randomElement()!
-            
-            // Randomly lock some items for visual variety
-            let isRandomLocked = Bool.random()
-            
-            let itemTitle: String
-            let itemIcon: String
-            switch randomType {
-            case .motivation: itemTitle = "Motivasi Humor Extra #\(i)"; itemIcon = "star.fill"
-            case .story: itemTitle = "Cerita Sampingan #\(i)"; itemIcon = "book.fill"
-            case .title: itemTitle = "Gelar Misteri #\(i)"; itemIcon = "medal.fill"
-            }
-            
-            newRewards.append(
-                RewardItem(
-                    type: randomType,
-                    title: itemTitle,
-                    icon: itemIcon,
-                    style: randomStyle,
-                    buttonTitle: isRandomLocked ? "Terkunci" : "Lihat",
-                    isLocked: isRandomLocked,
-                    unlockMessage: "Kumpulkan\n\(Int.random(in: 10...50) * 10) XP lagi yuk!"
-                )
+                style: palette[index % palette.count],
+                buttonTitle: isLocked ? "Butuh Level \(requiredLevel)" : "Lihat Motivasi",
+                isLocked: isLocked,
+                unlockMessage: "Capai\nLevel \(requiredLevel) untuk membuka!",
+                detailContent: text,
+                detailIndex: index
             )
         }
         
-        // Sort: Unlocked items first, then Locked items
-        newRewards.sort { !$0.isLocked && $1.isLocked }
+        let storyRewards = storyItems.enumerated().map { index, text in
+            // Stories unlock every 2 Streaks (0, 2, 4...)
+            let requiredStreak = index * 2
+            let isLocked = currentStreak < requiredStreak
+            return RewardItem(
+                type: .story,
+                title: "Cerita Absurd Academy #\(index + 1)",
+                icon: "book.fill",
+                style: palette[(index + 1) % palette.count],
+                buttonTitle: isLocked ? "Butuh Streak \(requiredStreak)" : "Buka Cerita",
+                isLocked: isLocked,
+                unlockMessage: "Kumpulkan\n\(max(0, requiredStreak - currentStreak)) Streak lagi yuk!",
+                detailContent: text,
+                detailIndex: index
+            )
+        }
         
-        self.rewards = newRewards
+        let titleRewards = titleItems.enumerated().map { index, text in
+            // Titles unlock every 2 Levels starting at Level 2 (2, 4, 6...)
+            let requiredLevel = (index + 1) * 2
+            let isLocked = currentLevel < requiredLevel
+            return RewardItem(
+                type: .title,
+                title: "Gelar: \(text)",
+                icon: "medal.fill",
+                style: palette[(index + 2) % palette.count],
+                buttonTitle: isLocked ? "Butuh Level \(requiredLevel)" : "Lihat Gelar",
+                isLocked: isLocked,
+                unlockMessage: "Capai\nLevel \(requiredLevel) untuk gelar ini!",
+                detailContent: text,
+                detailIndex: index
+            )
+        }
+        
+        // Sort: Unlocked items first, then Locked items (stable sort)
+        let newRewards = (motivationRewards + storyRewards + titleRewards)
+        self.rewards = newRewards.sorted { 
+            if $0.isLocked == $1.isLocked {
+                // Keep the internal ordering if both are locked or unlocked
+                return $0.detailIndex < $1.detailIndex
+            }
+            return !$0.isLocked && $1.isLocked 
+        }
+    }
+    
+    private func sanitizeItems(_ items: [String], fallback: String) -> [String] {
+        let cleaned = items
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+        return cleaned.isEmpty ? [fallback] : cleaned
+    }
+    
+    private func trimAndDeduplicate(_ items: [String], targetCount: Int, fallback: String) -> [String] {
+        var seen = Set<String>()
+        let cleaned = items
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+            .filter { seen.insert($0).inserted }
+        
+        if cleaned.isEmpty {
+            return [fallback]
+        }
+        
+        if cleaned.count > targetCount {
+            return Array(cleaned.prefix(targetCount))
+        }
+        
+        return cleaned
+    }
+    
+    private func refreshActiveDetailContent() {
+        guard let activeDetail else { return }
+        let index = max(0, activeDetailIndex)
+        
+        switch activeDetail {
+        case .motivation:
+            if motivationItems.indices.contains(index) {
+                activeDetailContent = motivationItems[index]
+            }
+        case .story:
+            if storyItems.indices.contains(index) {
+                activeDetailContent = storyItems[index]
+            }
+        case .title:
+            if titleItems.indices.contains(index) {
+                activeDetailContent = titleItems[index]
+            }
+        }
     }
 }

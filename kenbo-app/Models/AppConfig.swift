@@ -5,6 +5,6 @@ struct AppConfig {
     /// Set to `false` for production releases.
     static let isDevelopment = true
     
-    /// Placeholder for Gemini API Key. Replace with actual key.
-    static let geminiApiKey = "AIzaSyCE4kAsRCdiRadBuUHSG7RKmkwSr7BuizQ"
+    /// Set GEMINI_API_KEY in Info.plist (via .xcconfig or build settings).
+    static let geminiApiKey = Bundle.main.object(forInfoDictionaryKey: "GEMINI_API_KEY") as? String ?? ""
 }

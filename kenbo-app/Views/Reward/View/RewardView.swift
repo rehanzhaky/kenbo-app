@@ -99,6 +99,8 @@ struct RewardView: View {
                                         unlockMessage: reward.unlockMessage
                                     ) {
                                         viewModel.activeDetail = reward.type
+                                        viewModel.activeDetailContent = reward.detailContent
+                                        viewModel.activeDetailIndex = reward.detailIndex
                                     }
                                 }
                             }
@@ -152,14 +154,14 @@ struct RewardView: View {
                 switch type {
                 case .motivation:
                     RewardMotivationView(
-                        content: viewModel.motivationContent,
+                        content: viewModel.activeDetailContent,
                         onRefresh: {
                             Task { await viewModel.loadAIContent() }
                         }
                     )
                 case .story:
                     RewardStoryView(
-                        content: viewModel.storyContent,
+                        content: viewModel.activeDetailContent,
                         onRefresh: {
                             Task { await viewModel.loadAIContent() }
                         }
@@ -167,7 +169,7 @@ struct RewardView: View {
                 case .title:
                     RewardTitleView(
                         userName: viewModel.userProfile.name,
-                        title: "Ksatria Bugar"
+                        title: viewModel.activeDetailContent
                     )
                 }
             }

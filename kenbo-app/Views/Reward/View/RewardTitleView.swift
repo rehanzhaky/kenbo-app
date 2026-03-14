@@ -2,6 +2,7 @@ import SwiftUI
 
 struct RewardTitleView: View {
     @Environment(\.dismiss) var dismiss
+    @ObservedObject private var prefs = UserPreferences.shared
     let userName: String
     let title: String
     
@@ -14,8 +15,18 @@ struct RewardTitleView: View {
                 EarnTitleView(title: title)
             },
             bottomContent: {
-                PrimaryButton(title: "Tutup") {
-                    dismiss()
+                VStack(spacing: 16) {
+                    PrimaryButton(
+                        title: prefs.titleBadge == title ? "Gelar Dipakai" : "Pakai Gelar",
+                        action: {
+                            prefs.equipTitleBadge(title)
+                        },
+                        isDisabled: prefs.titleBadge == title
+                    )
+                    
+                    SecondaryButton(title: "Tutup") {
+                        dismiss()
+                    }
                 }
             }
         )
