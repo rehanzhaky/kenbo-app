@@ -33,22 +33,16 @@ struct RewardMotivationView: View {
                     }
                     .padding(.bottom, 32)
                 }
+                .frame(maxWidth: .infinity)
                 .background(Color.App.Purple.dark)
                 .cornerRadius(12)
                 .padding(.horizontal, 40)
                 
-                // Action Buttons
-                VStack(spacing: 12) {
-                    PrimaryButton(title: "Cari Motivasi Lain xixi") {
-                        onRefresh()
-                    }
-                    
-                    Button("Tutup") {
-                        dismiss()
-                    }
-                    .foregroundColor(Color.App.Gray.primary)
-                    .font(.system(size: 16, weight: .bold))
+                // Close Button
+                PrimaryButton(title: "Tutup") {
+                    dismiss()
                 }
+                .padding(.horizontal, 40)
                 .padding(.top, 20)
             }
         }

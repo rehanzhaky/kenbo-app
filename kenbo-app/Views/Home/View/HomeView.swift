@@ -15,6 +15,8 @@ struct HomeView: View {
     @State private var lastOffset: CGFloat = 0
     @State private var isExpanded: Bool = false
     @State private var showingRewards: Bool = false
+    @State private var showingStreak: Bool = false
+    
     
     // Constants for drawer positioning
     private let collapsedOffset: CGFloat = 680 // Increased to show all profile UI
@@ -35,7 +37,12 @@ struct HomeView: View {
                             Spacer()
                             HStack(spacing: 8) {
                                 PillBadgeView(text: "Lv. \(viewModel.userProfile.level)", style: .level)
-                                PillBadgeView(text: "\(viewModel.userProfile.streak)", iconName: "flame.fill", style: .streak)
+                                Button {
+                                    showingStreak = true
+                                } label: {
+                                    PillBadgeView(text: "\(viewModel.userProfile.streak)", iconName: "flame.fill", style: .streak)
+                                }
+                                .buttonStyle(.plain)
                             }
                         }
                         .padding(.top, 10)
@@ -181,7 +188,7 @@ struct HomeView: View {
                     viewModel.completeTask(id: "quest_hand", earnedXP: xp)
                 })
             case .head:
-                EyeTaskFlowView(questID: "quest_head", onComplete: { xp in
+                HeadTaskFlowView(questID: "quest_head", onComplete: { xp in
                     viewModel.completeTask(id: "quest_head", earnedXP: xp)
                 })
             case .walk:
@@ -195,6 +202,12 @@ struct HomeView: View {
                 userName: viewModel.userProfile.name,
                 gender: viewModel.userProfile.gender
             )
+        }
+        .fullScreenCover(isPresented: $showingStreak) {
+            let streakVM = StreakViewModel()
+            // Set the streak to match the user's actual streak
+            let _ = { streakVM.currentStreak = viewModel.userProfile.streak }()
+            StreakOverlayView(viewModel: streakVM, onDismiss: { showingStreak = false })
         }
     }
 }

@@ -71,12 +71,15 @@ class RewardViewModel: ObservableObject {
         let currentXP = prefs.currentXP
         let currentStreak = prefs.streak
         
-        self.rewards = [
+        let styles: [RewardCardStyle] = [.orange, .green, .red, .blue, .purple, .teal]
+        
+        // Always include the core ones first to ensure they are visible
+        var newRewards: [RewardItem] = [
             RewardItem(
                 type: .motivation,
                 title: "Motivasi Humor Academy #\(prefs.unlockedMotivationCount)",
                 icon: "star.fill",
-                style: .solid(primary: Color(hex: "5E412F"), dark: Color(hex: "3D2B1F")),
+                style: .orange,
                 buttonTitle: "Lihat Motivasi",
                 isLocked: false,
                 unlockMessage: nil
@@ -88,7 +91,7 @@ class RewardViewModel: ObservableObject {
                 style: .blue,
                 buttonTitle: currentStreak >= 3 ? "Buka Cerita" : "Butuh Streak 3 Hari",
                 isLocked: currentStreak < 3,
-                unlockMessage: "Capai Streak 3 hari untuk membuka story ini!"
+                unlockMessage: "Kumpulkan\n\(3 - currentStreak) Streak lagi yuk!"
             ),
             RewardItem(
                 type: .title,
@@ -97,8 +100,43 @@ class RewardViewModel: ObservableObject {
                 style: .green,
                 buttonTitle: prefs.titleBadge != nil ? "Lihat Gelar" : "Selesaikan Semua Quest",
                 isLocked: prefs.titleBadge == nil,
-                unlockMessage: "Selesaikan semua quest hari ini untuk gelar ini!"
+                unlockMessage: "Kumpulkan\nXP lebih banyak lagi yuk!"
             )
         ]
+        
+        // Generate additional random items to fill out the list
+        for i in 1...7 {
+            let typeOptions: [RewardDetailType] = [.motivation, .story, .title]
+            let randomType = typeOptions.randomElement()!
+            let randomStyle = styles.randomElement()!
+            
+            // Randomly lock some items for visual variety
+            let isRandomLocked = Bool.random()
+            
+            let itemTitle: String
+            let itemIcon: String
+            switch randomType {
+            case .motivation: itemTitle = "Motivasi Humor Extra #\(i)"; itemIcon = "star.fill"
+            case .story: itemTitle = "Cerita Sampingan #\(i)"; itemIcon = "book.fill"
+            case .title: itemTitle = "Gelar Misteri #\(i)"; itemIcon = "medal.fill"
+            }
+            
+            newRewards.append(
+                RewardItem(
+                    type: randomType,
+                    title: itemTitle,
+                    icon: itemIcon,
+                    style: randomStyle,
+                    buttonTitle: isRandomLocked ? "Terkunci" : "Lihat",
+                    isLocked: isRandomLocked,
+                    unlockMessage: "Kumpulkan\n\(Int.random(in: 10...50) * 10) XP lagi yuk!"
+                )
+            )
+        }
+        
+        // Sort: Unlocked items first, then Locked items
+        newRewards.sort { !$0.isLocked && $1.isLocked }
+        
+        self.rewards = newRewards
     }
 }

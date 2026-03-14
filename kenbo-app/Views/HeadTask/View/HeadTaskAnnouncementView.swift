@@ -1,17 +1,19 @@
 import SwiftUI
 
 struct HeadTaskAnnouncementView: View {
+    @ObservedObject var viewModel: HeadTaskViewModel
+    
     var body: some View {
         ResponseTemplateView(
             imageName: "enjoy_truck", // Placeholder for truck pixel art
-            title: "Enjoy Dulu Yuk",
-            subtitle: "Pegang handphone di tanganmu ya lalu putar pergelangan tanganmu biar rileks dulu nih yee",
+            title: "Putar Kepala\nKiri & Kanan",
+            subtitle: "Rileks sejenak, ikuti instruksi putar kepalamu ke kiri dan kanan untuk menyegarkan lehermu.",
             topContent: {
                 Color.clear.frame(height: 20)
             },
             bottomContent: {
                 PrimaryButton(title: "Yuk") {
-                    // Navigate to HeadTaskTrackingView
+                    viewModel.beginTracking()
                 }
                 .padding(.top, 20)
             }
@@ -20,5 +22,5 @@ struct HeadTaskAnnouncementView: View {
 }
 
 #Preview {
-    HeadTaskAnnouncementView()
+    HeadTaskAnnouncementView(viewModel: HeadTaskViewModel(onComplete: { _ in }))
 }

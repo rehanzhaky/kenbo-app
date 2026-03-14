@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct HeadTaskResultView: View {
+    @ObservedObject var viewModel: HeadTaskViewModel
+    
     var body: some View {
         ResponseTemplateView(
             title: "Bagus Banget",
@@ -23,7 +25,7 @@ struct HeadTaskResultView: View {
             },
             bottomContent: {
                 PrimaryButton(title: "Lanjut") {
-                    // Finalize head task action
+                    viewModel.finishTask()
                 }
             }
         )
@@ -31,5 +33,5 @@ struct HeadTaskResultView: View {
 }
 
 #Preview {
-    HeadTaskResultView()
+    HeadTaskResultView(viewModel: HeadTaskViewModel(onComplete: { _ in }))
 }

@@ -27,10 +27,10 @@ struct EyeTaskTrackingView: View {
                             value: isPulsing
                         )
 
-                    // Camera Scanning Circle
-                    Circle()
-                        .fill(Color(hex: "D9D9D9"))
+                    // Real Camera Scan
+                    ARFaceView()
                         .frame(width: 260, height: 260)
+                        .clipShape(Circle())
 
                     Circle()
                         .stroke(Color.white, lineWidth: 6)
@@ -55,7 +55,7 @@ struct EyeTaskTrackingView: View {
                         color: .white,
                         backgroundColor: Color.App.Purple.light.opacity(0.5),
                         height: 20,
-                        text: viewModel.timeLabel,
+                        text: viewModel.progressLabel,
                         textColor: .white
                     )
                     .frame(width: 300)

@@ -44,17 +44,13 @@ struct RewardStoryView: View {
                         
                         Spacer()
                         
-                        // Action Buttons
-                        VStack(spacing: 12) {
-                            PrimaryButton(title: "Cerita Lain Kuy xixi") {
-                                onRefresh()
-                            }
-                            
-                            Button("Tutup") {
+                        // Close Button
+                        HStack {
+                            Spacer()
+                            PrimaryButton(title: "Tutup") {
                                 dismiss()
                             }
-                            .foregroundColor(Color.App.Gray.primary)
-                            .font(.system(size: 16, weight: .bold))
+                            Spacer()
                         }
                         .padding(.bottom, max(geometry.safeAreaInsets.bottom, 40))
                     }

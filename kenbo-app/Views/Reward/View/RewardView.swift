@@ -2,6 +2,7 @@ import SwiftUI
 
 struct RewardView: View {
     @StateObject private var viewModel: RewardViewModel
+    @Environment(\.dismiss) var dismiss
     
     // Drawer State
     @State private var drawerOffset: CGFloat = 0
@@ -20,6 +21,22 @@ struct RewardView: View {
             ZStack(alignment: .top) {
                 // Background Section
                 VStack(spacing: 24) {
+                    // Back Button
+                    HStack {
+                        Button(action: {
+                            dismiss()
+                        }) {
+                            HStack(spacing: 8) {
+                                Image(systemName: "chevron.left")
+                                    .font(.system(size: 20, weight: .bold))
+                                Text("Kembali")
+                                    .font(.system(size: 16, weight: .bold))
+                            }
+                            .foregroundColor(Color.App.Purple.dark)
+                        }
+                        Spacer()
+                    }
+                    
                     // Profile Card
                     ProfileCard(
                         userName: viewModel.userProfile.name,
@@ -99,11 +116,12 @@ struct RewardView: View {
                             Rectangle()
                                 .fill(Color.white)
                                 .offset(y: 100)
+                                .padding(.bottom, -1000) // Ensure it extends far down without stretching content
                         }
                     )
                     .clipShape(RoundedCornerShape(radius: 48, corners: [.topLeft, .topRight]))
                 }
-                .frame(height: geometry.size.height + 1000) // Ensure it extends far down
+                .frame(height: geometry.size.height - expandedOffset) // Constrain scrollview height to visible area
                 .offset(y: drawerOffset == 0 ? (isExpanded ? expandedOffset : collapsedOffset) : drawerOffset)
                 .gesture(
                     DragGesture()
