@@ -8,6 +8,7 @@
 
 /* Begin PBXFileReference section */
 		81D709CE2F61497100FF523D /* kenbo-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "kenbo-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		81D709E02F61497300FF523D /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -34,6 +35,7 @@
 			children = (
 				81D709D02F61497100FF523D /* kenbo-app */,
 				81D709CF2F61497100FF523D /* Products */,
+				81D709E02F61497300FF523D /* Secrets.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -246,6 +248,7 @@
 		};
 		81D709DC2F61497200FF523D /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 81D709E02F61497300FF523D /* Secrets.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -255,6 +258,7 @@
 				DEVELOPMENT_TEAM = LG4MLLS834;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_GEMINI_API_KEY = "$(GEMINI_API_KEY)";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -280,6 +284,7 @@
 		};
 		81D709DD2F61497200FF523D /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 81D709E02F61497300FF523D /* Secrets.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -289,6 +294,7 @@
 				DEVELOPMENT_TEAM = LG4MLLS834;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_GEMINI_API_KEY = "$(GEMINI_API_KEY)";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
